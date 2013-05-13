@@ -1,5 +1,6 @@
 package com.paradroid.paradroidalarm;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.adylitica.database.AlarmDataSource;
@@ -16,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
@@ -41,7 +43,7 @@ public class MainActivity extends FragmentActivity {
 	private static AlarmAdapter aa;
 	private static AlarmDataSource nds;
 	private static MainActivity ma;
-
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -162,5 +164,7 @@ public class MainActivity extends FragmentActivity {
 					pendingIntent);
 		}
 	}
+	
+	
 
 }
