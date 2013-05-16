@@ -1,9 +1,8 @@
 package com.paradroid.paradroidalarm;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-
 import com.adylitica.database.AlarmDataSource;
+import com.example.helper.ParamHelper;
 import com.example.paradroidalarm.R;
 import com.paradroid.adapter.AlarmAdapter;
 
@@ -13,11 +12,9 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
@@ -33,9 +30,11 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 public class MainActivity extends FragmentActivity {
 
+	public static final String APP_TAG = "AlarmApp";
 	private Button addAlarm;
 	private TimePickerFragment df;
 	private ListView listAlarms;
@@ -43,11 +42,14 @@ public class MainActivity extends FragmentActivity {
 	private static AlarmAdapter aa;
 	private static AlarmDataSource nds;
 	private static MainActivity ma;
-    
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+
+		ParamHelper.initParamHelper(this);
 
 		ma = this;
 
@@ -55,7 +57,8 @@ public class MainActivity extends FragmentActivity {
 
 		c = nds.getAllAlarm();
 		aa = new AlarmAdapter(this, c);
-
+		
+		
 		listAlarms = (ListView) findViewById(R.id.listAlarm);
 
 		listAlarms.setAdapter(aa);
@@ -98,7 +101,14 @@ public class MainActivity extends FragmentActivity {
 
 			c = nds.getAllAlarm();
 			aa.changeCursor(c);
-
+			
+			Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+			PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+					(int) info.id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+			AlarmManager am = 
+					(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+		    am.cancel(pendingIntent);
+			
 			Log.v("Test", "item id " + info.id);
 			Log.v("Test", "position " + info.position);
 			return true;
@@ -109,12 +119,28 @@ public class MainActivity extends FragmentActivity {
 
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// do stuff with CalendarContract
+		switch(item.getItemId())
+		{
+		case 1:
+			Intent viewIntent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(viewIntent, 2);
 
+			return false;
+
+		}
+
+		return super.onOptionsItemSelected(item);
+
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		// Inflate the menu; this adds items to the action
+		menu.add(1, 1, 0, "Settings");
 		return true;
 	}
 
@@ -164,7 +190,6 @@ public class MainActivity extends FragmentActivity {
 					pendingIntent);
 		}
 	}
-	
-	
+
 
 }

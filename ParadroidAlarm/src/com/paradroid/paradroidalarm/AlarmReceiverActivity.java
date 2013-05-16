@@ -3,13 +3,16 @@ package com.paradroid.paradroidalarm;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.example.helper.ParamHelper;
 import com.example.paradroidalarm.R;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +28,12 @@ import android.widget.Button;
 
 public class AlarmReceiverActivity extends Activity {
 	private MediaPlayer mMediaPlayer; 
+	private MediaPlayer mMediaPlayer1; 
+	private MediaPlayer mMediaPlayer2; 
+	private MediaPlayer mMediaPlayer3;
+
+	private AudioManager audioManager;
+
 	private static final int REQUEST_CODE = 1234;
 
 	private boolean stopALarmbool = false;
@@ -32,6 +41,7 @@ public class AlarmReceiverActivity extends Activity {
 
 	private Handler handlerRecon = new Handler();
 	private Handler handlerSound = new Handler();
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,11 +53,14 @@ public class AlarmReceiverActivity extends Activity {
 		setContentView(R.layout.alarm);
 
 		Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
+
+		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
 		stopAlarm.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				mMediaPlayer.stop();
+				stopSound();
 				stopALarmbool = true;
 				finish();
 				return false;
@@ -55,9 +68,13 @@ public class AlarmReceiverActivity extends Activity {
 		});
 
 		//        while (alarmOn){
-			playSound(this, getAlarmUri());
-			handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second.
-			//        }
+		if(ParamHelper.getTalk()){
+			playSoundTalk(c);
+		}else{
+			playSoundMusic(c, getAlarmUri());
+		}
+		handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second.
+		//        }
 
 	}
 
@@ -84,30 +101,156 @@ public class AlarmReceiverActivity extends Activity {
 			if(!stopALarmbool){
 				Log.v("Test", "Indeed it goes here");
 				finishActivity(REQUEST_CODE);
-				playSound(c, getAlarmUri());
+
+				if(ParamHelper.getTalk()){
+					playSoundTalk(c);
+				}else{
+					playSoundMusic(c, getAlarmUri());
+				}
 				handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 5 second.
 			}
 		}
 	};
 
-	private void playSound(Context context, Uri alert) {
+	private void playSoundTalk(Context context) {
+		mMediaPlayer1 = new MediaPlayer();
+		mMediaPlayer2 = new MediaPlayer();
+		mMediaPlayer3 = new MediaPlayer();
+
+		//SON 1
+		AssetFileDescriptor afd = c.getResources().openRawResourceFd(R.raw.hour);
+		try {
+			mMediaPlayer1.reset();
+			mMediaPlayer1.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//SON 2
+		AssetFileDescriptor afd2 = c.getResources().openRawResourceFd(R.raw.minute);
+		try {
+			mMediaPlayer2.reset();
+			mMediaPlayer2.setDataSource(afd2.getFileDescriptor(), afd2.getStartOffset(), afd2.getDeclaredLength());
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//SON 3
+		AssetFileDescriptor afd3 = c.getResources().openRawResourceFd(R.raw.talky);
+		try {
+			mMediaPlayer3.reset();
+			mMediaPlayer3.setDataSource(afd3.getFileDescriptor(), afd3.getStartOffset(), afd3.getDeclaredLength());
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+				mMediaPlayer1.setAudioStreamType(AudioManager.STREAM_ALARM);
+				mMediaPlayer1.prepare();
+				mMediaPlayer1.start();
+			}
+
+		} 
+		catch (IllegalArgumentException e) {    } 
+		catch (IllegalStateException e) { } 
+		catch (IOException e) { } 
+
+
+		mMediaPlayer1.setOnCompletionListener(new OnCompletionListener() {
+
+			@Override
+			public void onCompletion(MediaPlayer player) {
+				player.stop();
+
+				try {
+					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+						mMediaPlayer2.setAudioStreamType(AudioManager.STREAM_ALARM);
+						mMediaPlayer2.prepare();
+						mMediaPlayer2.start();
+					}
+
+				} 
+				catch (IllegalArgumentException e) {    } 
+				catch (IllegalStateException e) { } 
+				catch (IOException e) { } 
+			}
+
+		});
+
+		mMediaPlayer2.setOnCompletionListener(new OnCompletionListener() {
+
+			@Override
+			public void onCompletion(MediaPlayer player) {
+				player.stop();
+
+				try {
+					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+						mMediaPlayer3.setAudioStreamType(AudioManager.STREAM_ALARM);
+						mMediaPlayer3.prepare();
+						mMediaPlayer3.start();
+					}
+
+				} 
+				catch (IllegalArgumentException e) {    } 
+				catch (IllegalStateException e) { } 
+				catch (IOException e) { } 
+			}
+
+		});
+
+	}
+
+	private void playSoundMusic(Context context, Uri alert) {
 		mMediaPlayer = new MediaPlayer();
 		try {
 			mMediaPlayer.setDataSource(context, alert);
-			final AudioManager audioManager = (AudioManager) context
-					.getSystemService(Context.AUDIO_SERVICE);
-			if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-				mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-				mMediaPlayer.prepare();
-				mMediaPlayer.start();
-			}
+			try {
+				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+					mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+					mMediaPlayer.prepare();
+					mMediaPlayer.start();
+				}
+
+			} 
+			catch (IllegalArgumentException e) {    } 
+			catch (IllegalStateException e) { } 
+			catch (IOException e) { } 
+
 		} catch (IOException e) {
 			System.out.println("OOPS");
 		}
 	}
 
 	private void stopSound(){
-		mMediaPlayer.stop();
+		if(ParamHelper.getTalk()){
+				if(mMediaPlayer1.isPlaying()){
+					mMediaPlayer1.stop();
+				}
+
+				if(mMediaPlayer2.isPlaying()){
+					mMediaPlayer2.stop();
+				}
+
+				if(mMediaPlayer3.isPlaying()){
+					mMediaPlayer3.stop();
+				}
+
+		}else{
+			mMediaPlayer.stop();
+		}
 	}
 
 	//Get an alarm sound. Try for an alarm. If none set, try notification, 
@@ -149,16 +292,16 @@ public class AlarmReceiverActivity extends Activity {
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			ArrayList<String> matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
-			if (matches.get(0).equals("stop")){
-				this.onDestroy();
+			if (matches.get(0).contains("stop")){
+				finish();
 			}
-			
+
 			Log.v("Test", "matches " + matches.get(0));
 			Log.v("Test", "RESULT ");
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
 	@Override
 	public void onDestroy(){
 		stopALarmbool = true;
