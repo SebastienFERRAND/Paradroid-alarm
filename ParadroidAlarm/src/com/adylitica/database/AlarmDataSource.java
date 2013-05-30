@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 public class AlarmDataSource {
 
@@ -70,6 +71,20 @@ public class AlarmDataSource {
 		sqlLtSt = database.compileStatement("DELETE FROM " + DataBaseHelper.DATABASE_TABLE_ALARM + " WHERE " 
 				+ DataBaseHelper.DATABASE_ID_ALARM + "=" + id);
 		sqlLtSt.execute();
+	}
+
+	public Cursor getAlarm(int id) {
+		
+		Cursor cursor = database.query(DataBaseHelper.DATABASE_TABLE_ALARM, 
+				allColumnsAlarm,
+				"(" + DataBaseHelper.DATABASE_ID_ALARM + "=" + id + ")", 
+						null,
+						null,
+						null,
+						null
+				);
+		
+		return cursor;
 	}
 
 }

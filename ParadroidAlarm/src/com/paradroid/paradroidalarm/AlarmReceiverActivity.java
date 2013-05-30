@@ -7,6 +7,7 @@ import com.example.helper.ParamHelper;
 import com.example.paradroidalarm.R;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -17,6 +18,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +34,7 @@ public class AlarmReceiverActivity extends Activity {
 	private MediaPlayer mMediaPlayer1; 
 	private MediaPlayer mMediaPlayer2; 
 	private MediaPlayer mMediaPlayer3;
+	private MediaPlayer mMediaPlayer4;
 
 	private AudioManager audioManager;
 
@@ -42,14 +46,29 @@ public class AlarmReceiverActivity extends Activity {
 	private Handler handlerRecon = new Handler();
 	private Handler handlerSound = new Handler();
 
-
+	private int id;
+	private int minute;
+	private int hour;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();
+		
+		PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+        wakeLock.acquire();
+        
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+        	    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+        	    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+		id = intent.getIntExtra("id", 0);
+		minute = intent.getIntExtra("minute", 0);
+		hour = intent.getIntExtra("hourOfDay", 0);
+
 		c = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.alarm);
 
 		Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
@@ -68,13 +87,13 @@ public class AlarmReceiverActivity extends Activity {
 		});
 
 		//        while (alarmOn){
-		if(ParamHelper.getTalk()){
-			playSoundTalk(c);
-		}else{
-			playSoundMusic(c, getAlarmUri());
-		}
-		handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second.
-		//        }
+			if(ParamHelper.getTalk()){
+				playSoundTalk(c);
+			}else{
+				playSoundMusic(c, getAlarmUri());
+			}
+			handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second.
+			//        }
 
 	}
 
@@ -86,9 +105,41 @@ public class AlarmReceiverActivity extends Activity {
 		{
 			if(!stopALarmbool){
 				stopSound();
+				playBip();
 				startVoiceRecognitionActivity();
 				handlerSound.postDelayed(startSound, 5000);//Message will be delivered in 5 second.
 			}
+		}
+
+		private void playBip() {
+			
+			mMediaPlayer4 = new MediaPlayer();
+
+			//SON 1
+			AssetFileDescriptor afd = c.getResources().openRawResourceFd(R.raw.beep);
+			try {
+				mMediaPlayer4.reset();
+				mMediaPlayer4.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+					mMediaPlayer4.setAudioStreamType(AudioManager.STREAM_ALARM);
+					mMediaPlayer4.prepare();
+					mMediaPlayer4.start();
+				}
+
+			} 
+			catch (IllegalArgumentException e) {    } 
+			catch (IllegalStateException e) { } 
+			catch (IOException e) { } 
+			
 		}
 	};
 
@@ -236,17 +287,17 @@ public class AlarmReceiverActivity extends Activity {
 
 	private void stopSound(){
 		if(ParamHelper.getTalk()){
-				if(mMediaPlayer1.isPlaying()){
-					mMediaPlayer1.stop();
-				}
+			if(mMediaPlayer1.isPlaying()){
+				mMediaPlayer1.stop();
+			}
 
-				if(mMediaPlayer2.isPlaying()){
-					mMediaPlayer2.stop();
-				}
+			if(mMediaPlayer2.isPlaying()){
+				mMediaPlayer2.stop();
+			}
 
-				if(mMediaPlayer3.isPlaying()){
-					mMediaPlayer3.stop();
-				}
+			if(mMediaPlayer3.isPlaying()){
+				mMediaPlayer3.stop();
+			}
 
 		}else{
 			mMediaPlayer.stop();
@@ -294,10 +345,10 @@ public class AlarmReceiverActivity extends Activity {
 					RecognizerIntent.EXTRA_RESULTS);
 			if (matches.get(0).contains("stop")){
 				finish();
+			}else if(matches.get(0).contains("later")){
+				MainActivity.snooze(id, minute, hour);
+				finish();
 			}
-
-			Log.v("Test", "matches " + matches.get(0));
-			Log.v("Test", "RESULT ");
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -306,6 +357,8 @@ public class AlarmReceiverActivity extends Activity {
 	public void onDestroy(){
 		stopALarmbool = true;
 		stopSound();
+		Log.v("Test", "Destroy");
+		MainActivity.on(id, minute, hour);
 		super.onDestroy();
 	}
 }	

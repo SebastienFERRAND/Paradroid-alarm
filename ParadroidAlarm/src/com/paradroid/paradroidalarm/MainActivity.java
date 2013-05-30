@@ -40,14 +40,13 @@ public class MainActivity extends FragmentActivity {
 	private ListView listAlarms;
 	private static Cursor c;
 	private static AlarmAdapter aa;
-	private static AlarmDataSource nds;
-	private static MainActivity ma;
+	public static AlarmDataSource nds;
+	public static MainActivity ma;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 
 		ParamHelper.initParamHelper(this);
 
@@ -57,8 +56,8 @@ public class MainActivity extends FragmentActivity {
 
 		c = nds.getAllAlarm();
 		aa = new AlarmAdapter(this, c);
-		
-		
+
+
 		listAlarms = (ListView) findViewById(R.id.listAlarm);
 
 		listAlarms.setAdapter(aa);
@@ -92,8 +91,6 @@ public class MainActivity extends FragmentActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		if(item.getTitle().equals("Edit Alarm")) {
 
-			Log.v("Test", "item id " + info.id);
-			Log.v("Test", "position " + info.position);
 			return true;
 		}else if(item.getTitle().equals("Delete Alarm")){
 
@@ -101,16 +98,14 @@ public class MainActivity extends FragmentActivity {
 
 			c = nds.getAllAlarm();
 			aa.changeCursor(c);
-			
+
 			Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 			PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 					(int) info.id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 			AlarmManager am = 
 					(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-		    am.cancel(pendingIntent);
-			
-			Log.v("Test", "item id " + info.id);
-			Log.v("Test", "position " + info.position);
+			am.cancel(pendingIntent);
+
 			return true;
 
 		}else{
@@ -130,7 +125,6 @@ public class MainActivity extends FragmentActivity {
 			startActivityForResult(viewIntent, 2);
 
 			return false;
-
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -171,24 +165,94 @@ public class MainActivity extends FragmentActivity {
 			c = nds.getAllAlarm();
 			aa.changeCursor(c);
 
-			//Create an offset from the current time in which the alarm will go off.
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.MINUTE, minute);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-
-
-			Log.v("Test", cal.getTime() + "2");
-
-			//Create a new PendingIntent and add it to the AlarmManager
-			Intent intent = new Intent(ma, AlarmReceiverActivity.class);
-			PendingIntent pendingIntent = PendingIntent.getActivity(ma,
-					(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-			AlarmManager am = 
-					(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-			am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-					pendingIntent);
+			MainActivity.on(id, minute, hourOfDay);
 		}
+	}
+
+	public static void off(double id) {
+		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager am = 
+				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+		am.cancel(pendingIntent);
+	}
+
+	public static void offAndOut(double id) {
+		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager am = 
+				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+		am.cancel(pendingIntent);
+
+		c = nds.getAllAlarm();
+		aa.changeCursor(c);
+	}
+
+	public static void on(double id, int minute, int hourOfDay) {
+
+		Log.v("Test", "minute : " + minute + " == > hourOfDay : " + hourOfDay);
+
+		//Create an offset from the current time in which the alarm will go off.
+		Calendar cal = Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+
+		if (cal.before(today)){
+			cal.add(Calendar.DAY_OF_WEEK, 1);
+		}
+
+		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		intent.putExtra("id", id);
+		intent.putExtra("minute", minute);
+		intent.putExtra("hourOfDay", hourOfDay);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+
+
+		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager am = 
+				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+				pendingIntent);
+	}
+
+	public static void snooze(double id, int minute, int hourOfDay) {
+		
+		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager am = 
+				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+		am.cancel(pendingIntent);
+		
+		//Create an offset from the current time in which the alarm will go off.
+		Calendar cal = Calendar.getInstance();
+		minute +=1;
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		
+		Log.v("Test", "Hour : " + hourOfDay + ", minute : " + minute);
+
+		intent = new Intent(ma, AlarmReceiverActivity.class);
+		intent.putExtra("id", id);
+		intent.putExtra("minute", minute);
+		intent.putExtra("hourOfDay", hourOfDay);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+
+
+		pendingIntent = PendingIntent.getActivity(ma,
+				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		am = 
+				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+
+		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+				pendingIntent);
 	}
 
 

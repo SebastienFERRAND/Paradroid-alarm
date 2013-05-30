@@ -11,7 +11,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
@@ -79,16 +81,25 @@ public class AlarmAdapter extends CursorAdapter {
         
 
 		onOff = (ToggleButton) v.findViewById(R.id.togglebuttononoff);
+		onOff.setChecked(true);
+		onOff.setTag(_id);
 		onOff.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				
+				double id = (Double) buttonView.getTag();
+				
+				Cursor cur = MainActivity.nds.getAlarm((int) id);
+				cur.moveToFirst();
+				int hourP = (int) cur.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
+		    	int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
+		    	int day = (int) cur.getDouble(DataBaseHelper.DATABASE_DAY_ALARM_INT);
+				
 				if (isChecked){
-					Log.v("Test", "on");
-					MainActivity.ma.off();
+					MainActivity.on(id, minuteP, hourP);
 				}else{
-					Log.v("Test", "off");
-					
+					MainActivity.off(id);
 				}
 				
 			}
@@ -109,6 +120,19 @@ public class AlarmAdapter extends CursorAdapter {
 
         if (time_snooze_text != null) {
         	time_snooze_text.setText(time_snooze + "");
-        }       
+        }
+        
+        Button deleteAlarm = (Button) v.findViewById(R.id.deleteAlarm);
+        deleteAlarm.setTag(_id);
+        deleteAlarm.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				double id = (Double) v.getTag();
+				MainActivity.nds.deleteAlarm((long) id);
+				MainActivity.offAndOut(id);
+			}
+		});
+        
     }
 }

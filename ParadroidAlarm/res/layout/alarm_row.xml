@@ -1,56 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_alarm"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_alarm"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp" >
 
     <ToggleButton
-            android:id="@+id/togglebuttononoff"
-            android:layout_width="56dp"
-            android:layout_height="33dp"
-            android:background="@drawable/toggle_me"
-            android:textOff=""
-            android:textOn="" />
+        android:id="@+id/togglebuttononoff"
+        android:layout_width="56dp"
+        android:layout_height="33dp"
+        android:background="@drawable/toggle_me"
+        android:textOff=""
+        android:textOn=""
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:typeface="serif"
-        android:layout_marginLeft="5dp" >
+        android:layout_toRightOf="@+id/togglebuttononoff"
+        android:layout_centerVertical="true" >
     </TextView>
-    
+
     <TextView
         android:id="@+id/nextring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:typeface="serif"
-        android:layout_marginLeft="5dp" >
+        android:layout_toRightOf="@+id/time"
+        android:layout_centerVertical="true" >
     </TextView>
-    
+
     <TextView
         android:id="@+id/days"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:typeface="serif"
-        android:layout_marginLeft="5dp" >
+        android:layout_toRightOf="@+id/nextring"
+        android:layout_centerVertical="true" >
     </TextView>
 
     <TextView
         android:id="@+id/sound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:typeface="serif"
-        android:layout_marginLeft="5dp" >
+        android:layout_toRightOf="@+id/days"
+        android:layout_centerVertical="true" >
     </TextView>
 
     <TextView
         android:id="@+id/snooze_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:typeface="serif"
-        android:layout_marginLeft="5dp" >
+        android:layout_toRightOf="@+id/sound"
+        android:layout_centerVertical="true" >
     </TextView>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/deleteAlarm"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/delete_button"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>
