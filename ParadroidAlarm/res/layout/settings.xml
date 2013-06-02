@@ -29,5 +29,29 @@
             android:textOff=""
             android:textOn="" />
     </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/time_snooze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dip"
+            android:text="Snooze will ring after :"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/pick_time_snooze"
+            android:layout_width="56dp"
+            android:layout_height="33dp"
+            android:layout_alignParentRight="true"
+            android:inputType="number"
+            android:text="5" />
+    </RelativeLayout>
 
 </LinearLayout>

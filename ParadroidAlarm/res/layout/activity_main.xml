@@ -6,7 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:background="#FFFFFF" >
 
     <Button
         android:id="@+id/add_alarm"
@@ -15,16 +16,16 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="add alarm" />
-    
+
     <ListView
         android:id="@+id/listAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/add_alarm"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
-
+        android:layout_centerVertical="true"
+        android:divider="#000000"
+        android:dividerHeight="1px" >
     </ListView>
-
 
 </RelativeLayout>

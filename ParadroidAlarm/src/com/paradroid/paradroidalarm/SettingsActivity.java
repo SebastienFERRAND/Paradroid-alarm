@@ -31,10 +31,8 @@ public class SettingsActivity extends Activity{
 
 		if (on) {
 			ParamHelper.pushTalk(true);
-			Log.v("Test", "on");
 		} else {
 			ParamHelper.pushTalk(false);
-			Log.v("Test", "off");
 			
 		}
 	}

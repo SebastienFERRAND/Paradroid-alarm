@@ -28,27 +28,34 @@ public final class R {
         public static final int toggle_me=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000e;
+        public static final int action_settings=0x7f090014;
         public static final int add_alarm=0x7f090000;
+        public static final int day1=0x7f090008;
+        public static final int day2=0x7f090009;
+        public static final int day3=0x7f09000a;
+        public static final int day4=0x7f09000b;
+        public static final int day5=0x7f09000c;
+        public static final int day6=0x7f09000d;
+        public static final int day7=0x7f09000e;
         public static final int days=0x7f090007;
-        public static final int deleteAlarm=0x7f09000a;
-        public static final int editNote=0x7f09000d;
+        public static final int deleteAlarm=0x7f090005;
+        public static final int editNote=0x7f090013;
         public static final int layout_alarm=0x7f090003;
         public static final int listAlarm=0x7f090001;
-        public static final int nextring=0x7f090006;
-        public static final int snooze_time=0x7f090009;
-        public static final int sound=0x7f090008;
+        public static final int pick_time_snooze=0x7f090012;
         public static final int stopAlarm=0x7f090002;
-        public static final int time=0x7f090005;
+        public static final int time=0x7f090006;
+        public static final int time_snooze=0x7f090011;
         public static final int togglebuttononoff=0x7f090004;
-        public static final int togglebuttontalk=0x7f09000c;
-        public static final int txttalk=0x7f09000b;
+        public static final int togglebuttontalk=0x7f090010;
+        public static final int txttalk=0x7f09000f;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int alarm=0x7f030001;
         public static final int alarm_row=0x7f030002;
-        public static final int settings=0x7f030003;
+        public static final int pick_days=0x7f030003;
+        public static final int settings=0x7f030004;
     }
     public static final class menu {
         public static final int delete_or_update_time_menu=0x7f080000;
@@ -63,6 +70,13 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
+        public static final int day1=0x7f060003;
+        public static final int day2=0x7f060004;
+        public static final int day3=0x7f060005;
+        public static final int day4=0x7f060006;
+        public static final int day5=0x7f060007;
+        public static final int day6=0x7f060008;
+        public static final int day7=0x7f060009;
         public static final int hello_world=0x7f060002;
     }
     public static final class style {

@@ -1,5 +1,6 @@
 package com.adylitica.database;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +21,8 @@ public class AlarmDataSource {
 		DataBaseHelper.DATABASE_HOUR_ALARM,DataBaseHelper.DATABASE_MINUTE_ALARM,
 		DataBaseHelper.DATABASE_DAY_ALARM, DataBaseHelper.DATABASE_SOUND_ALARM,
 		DataBaseHelper.DATABASE_TIME_SNOOZE_ALARM};
+	
+	private static String[] dayColumn = {DataBaseHelper.DATABASE_DAY_ALARM};
 
 	private SQLiteStatement sqlLtSt;
 
@@ -38,15 +41,15 @@ public class AlarmDataSource {
 		dbHelper.close();
 	}
 	
-	public long createAlarm(int hour, int minute, String day, int snooze) {
+	public int createAlarm(int hour, int minute, int day, int snooze) {
 
 		sqlLtSt = database.compileStatement("INSERT INTO " + DataBaseHelper.DATABASE_TABLE_ALARM 
 				+ " VALUES(NULL, ?, ?, ?, '', ?)");
 		sqlLtSt.bindLong(1, hour);
 		sqlLtSt.bindLong(2, minute);
-		sqlLtSt.bindString(3, day);
+		sqlLtSt.bindLong(3, day);
 		sqlLtSt.bindLong(4, snooze);
-		long id = sqlLtSt.executeInsert();
+		int id = (int) sqlLtSt.executeInsert();
 		
 		return id;
 
@@ -67,7 +70,7 @@ public class AlarmDataSource {
 
 	}
 
-	public void deleteAlarm(long id) {
+	public void deleteAlarm(int id) {
 		sqlLtSt = database.compileStatement("DELETE FROM " + DataBaseHelper.DATABASE_TABLE_ALARM + " WHERE " 
 				+ DataBaseHelper.DATABASE_ID_ALARM + "=" + id);
 		sqlLtSt.execute();
@@ -85,6 +88,34 @@ public class AlarmDataSource {
 				);
 		
 		return cursor;
+	}
+
+	public ArrayList<Integer> getDays(int id) {
+		ArrayList<Integer> days = new ArrayList<Integer>();
+		Cursor cursor = database.query(DataBaseHelper.DATABASE_TABLE_ALARM, 
+				dayColumn,
+				"(" + DataBaseHelper.DATABASE_ID_ALARM + "=" + id + ")", 
+						null,
+						null,
+						null,
+						null
+				);
+
+		Log.v("Test", cursor.getCount() + " : this is the day");
+		
+		while (cursor.moveToNext()){
+			int day = cursor.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT);
+			
+			Log.v("Test", day + " : this is the day");
+			
+			while (day > 0) {
+			     days.add(day%10);
+			     day/=10;
+			 }
+			
+		}
+		
+		return days;
 	}
 
 }

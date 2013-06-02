@@ -1,6 +1,8 @@
 package com.paradroid.paradroidalarm;
 
 import java.util.Calendar;
+import java.util.Locale;
+
 import com.adylitica.database.AlarmDataSource;
 import com.example.helper.ParamHelper;
 import com.example.paradroidalarm.R;
@@ -36,12 +38,15 @@ public class MainActivity extends FragmentActivity {
 
 	public static final String APP_TAG = "AlarmApp";
 	private Button addAlarm;
-	private TimePickerFragment df;
+	private static TimePickerFragment df;
 	private ListView listAlarms;
 	private static Cursor c;
 	private static AlarmAdapter aa;
 	public static AlarmDataSource nds;
 	public static MainActivity ma;
+	
+	public static boolean fromModify = false;
+	public static int idToModify;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +73,7 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View arg0) {
 
-				df = new TimePickerFragment();
-				df.show(getSupportFragmentManager(), "timePicker");
+				loadTimer();
 			}
 		});
 
@@ -94,7 +98,7 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		}else if(item.getTitle().equals("Delete Alarm")){
 
-			nds.deleteAlarm(info.id);
+			nds.deleteAlarm((int) info.id);
 
 			c = nds.getAllAlarm();
 			aa.changeCursor(c);
@@ -160,16 +164,26 @@ public class MainActivity extends FragmentActivity {
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			// Do something with the time chosen by the user
-
-			long id = nds.createAlarm(hourOfDay, minute, "lundi", 5);
-			c = nds.getAllAlarm();
-			aa.changeCursor(c);
-
-			MainActivity.on(id, minute, hourOfDay);
+			
+			if (fromModify){
+				MainActivity.nds.deleteAlarm(idToModify);
+				MainActivity.offAndOut(idToModify);
+			}
+			createAlarm(hourOfDay, minute);
+			fromModify = false;
 		}
 	}
+	
+	public static void createAlarm(int hourOfDay, int minute){
+		
+		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
+		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
+		c = nds.getAllAlarm();
+		aa.changeCursor(c);
+		MainActivity.on(id, minute, hourOfDay);
+	}
 
-	public static void off(double id) {
+	public static void off(int id) {
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -178,7 +192,7 @@ public class MainActivity extends FragmentActivity {
 		am.cancel(pendingIntent);
 	}
 
-	public static void offAndOut(double id) {
+	public static void offAndOut(int id) {
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -190,10 +204,8 @@ public class MainActivity extends FragmentActivity {
 		aa.changeCursor(c);
 	}
 
-	public static void on(double id, int minute, int hourOfDay) {
-
-		Log.v("Test", "minute : " + minute + " == > hourOfDay : " + hourOfDay);
-
+	public static void on(int id, int minute, int hourOfDay) {
+		
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
 		Calendar today = Calendar.getInstance();
@@ -201,10 +213,11 @@ public class MainActivity extends FragmentActivity {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
 
+		// récupérer l'alarme en question et programmer au jour approprié
 		if (cal.before(today)){
 			cal.add(Calendar.DAY_OF_WEEK, 1);
 		}
-
+		
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
@@ -221,38 +234,39 @@ public class MainActivity extends FragmentActivity {
 				pendingIntent);
 	}
 
-	public static void snooze(double id, int minute, int hourOfDay) {
-		
-		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
-				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-		AlarmManager am = 
-				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-		am.cancel(pendingIntent);
+	public static void snooze(int id, int minute, int hourOfDay) {
 		
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
-		minute +=1;
+		minute +=5;
 		cal.set(Calendar.MINUTE, minute);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		
-		Log.v("Test", "Hour : " + hourOfDay + ", minute : " + minute);
 
-		intent = new Intent(ma, AlarmReceiverActivity.class);
+		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-
-
-		pendingIntent = PendingIntent.getActivity(ma,
-				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-		am = 
+		
+		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+				(int) System.currentTimeMillis(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager am = 
 				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
 
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
+	}
+
+	public static void deleteAlarm(int id) {
+		nds.deleteAlarm(id);
+	}
+
+	public static void loadTimer() {
+
+		df = new TimePickerFragment();
+		df.show(ma.getSupportFragmentManager(), "timePicker");
+		
 	}
 
 

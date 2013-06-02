@@ -50,13 +50,15 @@ public class AlarmReceiverActivity extends Activity {
 	private int minute;
 	private int hour;
 	
+	private WakeLock wakeLock;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 		
 		PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        WakeLock wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+        wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
         wakeLock.acquire();
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -150,7 +152,6 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
-				Log.v("Test", "Indeed it goes here");
 				finishActivity(REQUEST_CODE);
 
 				if(ParamHelper.getTalk()){
@@ -343,9 +344,11 @@ public class AlarmReceiverActivity extends Activity {
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			ArrayList<String> matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
-			if (matches.get(0).contains("stop")){
+			Log.v("Test", "recognize : " + matches.get(0));
+			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top")){
 				finish();
 			}else if(matches.get(0).contains("later")){
+				// snooze but don't use same id
 				MainActivity.snooze(id, minute, hour);
 				finish();
 			}
@@ -357,8 +360,10 @@ public class AlarmReceiverActivity extends Activity {
 	public void onDestroy(){
 		stopALarmbool = true;
 		stopSound();
-		Log.v("Test", "Destroy");
-		MainActivity.on(id, minute, hour);
+		MainActivity.deleteAlarm(id);
+		MainActivity.createAlarm(hour, minute);
+        wakeLock.release();
+		
 		super.onDestroy();
 	}
 }	

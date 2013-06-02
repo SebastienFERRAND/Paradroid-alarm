@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.paradroid.paradroidalarm.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,12 +25,21 @@
         </activity>
         <activity
             android:name="com.paradroid.paradroidalarm.AlarmReceiverActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name="com.paradroid.paradroidalarm.SettingsActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name="com.paradroid.paradroidalarm.PickADayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"
+            android:excludeFromRecents="true" >
+        </activity>
+        
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />

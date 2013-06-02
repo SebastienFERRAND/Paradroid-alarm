@@ -9,11 +9,12 @@ public class ParamHelper {
 	private static SharedPreferences settings;
 	private static final String PREFS_NAME = "prefFileTime";
 	private static SharedPreferences.Editor editor;
+	private static Context con;
 	
 	public static void initParamHelper(Context context){
-		Log.v("Test", "init");
 		settings = context.getSharedPreferences(PREFS_NAME, 0);
 		editor = settings.edit();
+		con = context;
 	}
 	
 	
@@ -23,6 +24,8 @@ public class ParamHelper {
 	} 
 	
 	public static boolean getTalk(){
+		if (settings.equals(null))
+			initParamHelper(con);
 		boolean talk = settings.getBoolean("talkBool", false);
 		return talk;
 	}
