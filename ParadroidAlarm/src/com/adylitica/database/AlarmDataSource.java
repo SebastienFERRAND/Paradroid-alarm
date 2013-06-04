@@ -6,6 +6,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.paradroid.paradroidalarm.MainActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,7 +23,7 @@ public class AlarmDataSource {
 		DataBaseHelper.DATABASE_HOUR_ALARM,DataBaseHelper.DATABASE_MINUTE_ALARM,
 		DataBaseHelper.DATABASE_DAY_ALARM, DataBaseHelper.DATABASE_SOUND_ALARM,
 		DataBaseHelper.DATABASE_TIME_SNOOZE_ALARM};
-	
+
 	private static String[] dayColumn = {DataBaseHelper.DATABASE_DAY_ALARM};
 
 	private SQLiteStatement sqlLtSt;
@@ -40,7 +42,7 @@ public class AlarmDataSource {
 	public void close() {
 		dbHelper.close();
 	}
-	
+
 	public int createAlarm(int hour, int minute, int day, int snooze) {
 
 		sqlLtSt = database.compileStatement("INSERT INTO " + DataBaseHelper.DATABASE_TABLE_ALARM 
@@ -50,7 +52,7 @@ public class AlarmDataSource {
 		sqlLtSt.bindLong(3, day);
 		sqlLtSt.bindLong(4, snooze);
 		int id = (int) sqlLtSt.executeInsert();
-		
+
 		return id;
 
 	}
@@ -77,45 +79,44 @@ public class AlarmDataSource {
 	}
 
 	public Cursor getAlarm(int id) {
-		
+
 		Cursor cursor = database.query(DataBaseHelper.DATABASE_TABLE_ALARM, 
 				allColumnsAlarm,
 				"(" + DataBaseHelper.DATABASE_ID_ALARM + "=" + id + ")", 
-						null,
-						null,
-						null,
-						null
+				null,
+				null,
+				null,
+				null
 				);
-		
+
 		return cursor;
 	}
 
 	public ArrayList<Integer> getDays(int id) {
 		ArrayList<Integer> days = new ArrayList<Integer>();
 		Cursor cursor = database.query(DataBaseHelper.DATABASE_TABLE_ALARM, 
-				dayColumn,
+				allColumnsAlarm,
 				"(" + DataBaseHelper.DATABASE_ID_ALARM + "=" + id + ")", 
-						null,
-						null,
-						null,
-						null
+				null,
+				null,
+				null,
+				null
 				);
 
-		Log.v("Test", cursor.getCount() + " : this is the day");
+		cursor.moveToFirst();
+		int day = cursor.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT);
+
+		Log.v("Test", day + " : day");
 		
-		while (cursor.moveToNext()){
-			int day = cursor.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT);
-			
-			Log.v("Test", day + " : this is the day");
-			
-			while (day > 0) {
-			     days.add(day%10);
-			     day/=10;
-			 }
-			
-		}
+		days = MainActivity.intToArray(day);
 		
 		return days;
+	}
+
+	public void modifyDays(int id, int days) {
+		ContentValues args = new ContentValues();
+		args.put(DataBaseHelper.DATABASE_DAY_ALARM, days);
+		database.update(DataBaseHelper.DATABASE_TABLE_ALARM, args, DataBaseHelper.DATABASE_ID_ALARM + "=" + id, null);
 	}
 
 }

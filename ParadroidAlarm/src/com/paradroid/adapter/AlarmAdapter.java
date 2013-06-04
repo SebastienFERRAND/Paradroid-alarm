@@ -13,12 +13,7 @@ import com.paradroid.paradroidalarm.MainActivity.TimePickerFragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +22,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -76,8 +70,9 @@ public class AlarmAdapter extends CursorAdapter {
         if (hour_text != null) {
         	hour_text.setText(hour + ":" + minute);
         }
-        
+
         hour_text.setTag(_id);
+        
         hour_text.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -97,12 +92,12 @@ public class AlarmAdapter extends CursorAdapter {
         if (day_text != null) {
         	day_text.setText(formatter.format(calendar.getTime()));
         }
-        
+
+        day_text.setTag(_id);
         day_text.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-
 				Intent viewIntent = new Intent(mContext, PickADayActivity.class);
 				viewIntent.putExtra("idNote", (Integer) v.getTag());
 				((MainActivity) mContext).startActivityForResult(viewIntent, 1);
@@ -126,7 +121,9 @@ public class AlarmAdapter extends CursorAdapter {
 		    	int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
 				
 				if (isChecked){
-					MainActivity.on(id, minuteP, hourP);
+					Cursor c = MainActivity.nds.getAlarm(id);
+					c.moveToFirst();
+					MainActivity.on(id, minuteP, hourP, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 				}else{
 					MainActivity.off(id);
 				}

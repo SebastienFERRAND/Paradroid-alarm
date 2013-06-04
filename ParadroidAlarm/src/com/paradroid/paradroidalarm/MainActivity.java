@@ -1,9 +1,11 @@
 package com.paradroid.paradroidalarm;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 import com.adylitica.database.AlarmDataSource;
+import com.adylitica.database.DataBaseHelper;
 import com.example.helper.ParamHelper;
 import com.example.paradroidalarm.R;
 import com.paradroid.adapter.AlarmAdapter;
@@ -164,23 +166,54 @@ public class MainActivity extends FragmentActivity {
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			// Do something with the time chosen by the user
-			
+			int id = createAlarm(hourOfDay, minute);
 			if (fromModify){
+				ArrayList<Integer> days = MainActivity.nds.getDays(idToModify);
 				MainActivity.nds.deleteAlarm(idToModify);
 				MainActivity.offAndOut(idToModify);
+				MainActivity.nds.modifyDays(id, MainActivity.arrayListToInt(days));
 			}
-			createAlarm(hourOfDay, minute);
+			
 			fromModify = false;
 		}
 	}
 	
-	public static void createAlarm(int hourOfDay, int minute){
+	public static int createAlarm(int hourOfDay, int minute){
 		
 		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
 		c = nds.getAllAlarm();
 		aa.changeCursor(c);
-		MainActivity.on(id, minute, hourOfDay);
+		Cursor c = MainActivity.nds.getAlarm(id);
+		c.moveToFirst();
+		MainActivity.on(id, minute, hourOfDay, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+		return id;
+	}
+
+	public static int arrayListToInt(ArrayList<Integer> days) {
+		int day = 0;
+		if (days.contains(1)){
+			day+=1;
+		}
+		if (days.contains(2)){
+			day+=20;
+		}
+		if (days.contains(3)){
+			day+=300;
+		}
+		if (days.contains(4)){
+			day+=4000;
+		}
+		if (days.contains(5)){
+			day+=50000;
+		}
+		if (days.contains(6)){
+			day+=600000;
+		}
+		if (days.contains(7)){
+			day+=7000000;
+		}
+		return day;
 	}
 
 	public static void off(int id) {
@@ -204,7 +237,7 @@ public class MainActivity extends FragmentActivity {
 		aa.changeCursor(c);
 	}
 
-	public static void on(int id, int minute, int hourOfDay) {
+	public static void on(int id, int minute, int hourOfDay, int days) {
 		
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
@@ -212,10 +245,20 @@ public class MainActivity extends FragmentActivity {
 		cal.set(Calendar.MINUTE, minute);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		
+		ArrayList<Integer> listDays = MainActivity.intToArray(days);
 
 		// récupérer l'alarme en question et programmer au jour approprié
 		if (cal.before(today)){
-			cal.add(Calendar.DAY_OF_WEEK, 1);
+			int i = 1;
+			while (!listDays.contains(Calendar.DAY_OF_WEEK+i)){
+				if (i >7){
+					i = 1;
+				}else{
+					i++;
+				}
+			}
+			cal.add(Calendar.DAY_OF_WEEK, i);
 		}
 		
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
@@ -232,6 +275,17 @@ public class MainActivity extends FragmentActivity {
 
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
+	}
+
+	public static ArrayList<Integer> intToArray(int days) {
+		
+		ArrayList<Integer> arrayDays = new ArrayList<Integer>();
+		
+		while (days > 0) {
+			arrayDays.add(days%10);
+			days/=10;
+		}
+		return arrayDays;
 	}
 
 	public static void snooze(int id, int minute, int hourOfDay) {

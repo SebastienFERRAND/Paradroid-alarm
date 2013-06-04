@@ -30,16 +30,16 @@ public class ParamHelper {
 		return talk;
 	}
 	
-//	public static void pushOldValue(float value){
-//
-//		editor.putFloat("oldValue", value);
-//		editor.commit();
-//	}
-//	
-//	public static float getOldValue(){
-//
-//		float value = settings.getFloat("oldValue", 0);
-//		return value;
-//	}
+	public static void pushSnooze(float value){
+
+		editor.putFloat("snooze", value);
+		editor.commit();
+	}
+	
+	public static float getSnooze(){
+
+		float value = settings.getFloat("snooze", 0);
+		return value;
+	}
 
 }
