@@ -46,7 +46,7 @@ public class MainActivity extends FragmentActivity {
 	private static AlarmAdapter aa;
 	public static AlarmDataSource nds;
 	public static MainActivity ma;
-	
+
 	public static boolean fromModify = false;
 	public static int idToModify;
 
@@ -173,13 +173,13 @@ public class MainActivity extends FragmentActivity {
 				MainActivity.offAndOut(idToModify);
 				MainActivity.nds.modifyDays(id, MainActivity.arrayListToInt(days));
 			}
-			
+
 			fromModify = false;
 		}
 	}
-	
+
 	public static int createAlarm(int hourOfDay, int minute){
-		
+
 		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
 		c = nds.getAllAlarm();
@@ -238,49 +238,74 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public static void on(int id, int minute, int hourOfDay, int days) {
-		
+
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
-		Calendar today = Calendar.getInstance();
+
+		ArrayList<Integer> listDays = MainActivity.intToArray(days);
+
+		int nextDay;
+
+		nextDay = getNextRing(cal, listDays);
+		
+		if (nextDay == 0){
+			cal.add(Calendar.DATE, 7);
+		}
+		
+		cal.set(Calendar.DAY_OF_WEEK, nextDay);
 		cal.set(Calendar.MINUTE, minute);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		
-		ArrayList<Integer> listDays = MainActivity.intToArray(days);
 
-		// récupérer l'alarme en question et programmer au jour approprié
-		if (cal.before(today)){
-			int i = 1;
-			while (!listDays.contains(Calendar.DAY_OF_WEEK+i)){
-				if (i >7){
-					i = 1;
-				}else{
-					i++;
-				}
-			}
-			cal.add(Calendar.DAY_OF_WEEK, i);
-		}
-		
+		c = nds.getAllAlarm();
+		aa.changeCursor(c);
+
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 
-
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
 				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-
+		
+		Log.v("Test", "alarm " +  cal.toString());
+		
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
 	}
 
+	public static int getNextRing(Calendar cal, ArrayList<Integer> listDays) {
+		int day = cal.get(Calendar.DAY_OF_WEEK);
+		Calendar today = Calendar.getInstance();
+
+		if (!(listDays.size() == 0)){
+			for (int i = day; i <= listDays.size(); i++){
+				if (listDays.contains(i)){
+					if ((today.get(Calendar.DAY_OF_WEEK) == day) && (cal.before(today))){
+						
+					}else{
+						return i;
+					}
+				}
+			}
+
+			for (int i = 1; i <= day; i++){
+				if (listDays.contains(i)){
+					return i;
+				}
+			}
+
+		}
+		return 0;
+	}
+
 	public static ArrayList<Integer> intToArray(int days) {
-		
+
 		ArrayList<Integer> arrayDays = new ArrayList<Integer>();
-		
+
 		while (days > 0) {
 			arrayDays.add(days%10);
 			days/=10;
@@ -289,7 +314,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public static void snooze(int id, int minute, int hourOfDay) {
-		
+
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
 		minute +=5;
@@ -302,7 +327,7 @@ public class MainActivity extends FragmentActivity {
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-		
+
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) System.currentTimeMillis(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
@@ -320,7 +345,7 @@ public class MainActivity extends FragmentActivity {
 
 		df = new TimePickerFragment();
 		df.show(ma.getSupportFragmentManager(), "timePicker");
-		
+
 	}
 
 

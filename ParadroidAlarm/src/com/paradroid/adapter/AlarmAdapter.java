@@ -1,6 +1,7 @@
 package com.paradroid.adapter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -87,7 +88,12 @@ public class AlarmAdapter extends CursorAdapter {
         
         DateFormat formatter = new SimpleDateFormat("EEEE", Locale.getDefault());
         GregorianCalendar calendar = new GregorianCalendar();
-        calendar.set(Calendar.DAY_OF_WEEK, day);
+
+		ArrayList<Integer> listDays = MainActivity.intToArray(day);
+        
+        int numberDay = MainActivity.getNextRing(calendar, listDays);
+        
+        calendar.set(Calendar.DAY_OF_WEEK, numberDay);
         
         if (day_text != null) {
         	day_text.setText(formatter.format(calendar.getTime()));

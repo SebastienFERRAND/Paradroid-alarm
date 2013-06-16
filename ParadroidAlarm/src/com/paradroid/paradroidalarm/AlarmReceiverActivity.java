@@ -347,7 +347,7 @@ public class AlarmReceiverActivity extends Activity {
 			Log.v("Test", "recognize : " + matches.get(0));
 			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top")){
 				finish();
-			}else if(matches.get(0).contains("later")){
+			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")){
 				// snooze but don't use same id
 				MainActivity.snooze(id, minute, hour);
 				finish();
