@@ -3,8 +3,8 @@ package com.paradroid.paradroidalarm;
 
 import java.util.ArrayList;
 
-import com.adylitica.database.DataBaseHelper;
-import com.example.paradroidalarm.R;
+import com.paradroid.paradroidalarm.R;
+import com.paradroid.database.DataBaseHelper;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 
 public class PickADayActivity extends Activity {
@@ -100,7 +99,8 @@ public class PickADayActivity extends Activity {
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();
 		MainActivity.on(id, c.getInt(DataBaseHelper.DATABASE_MINUTE_ALARM_INT), c.getInt(DataBaseHelper.DATABASE_HOUR_ALARM_INT), days);
-		
+
+		Log.v("BEG", "HELLO  : " + days);
 		super.onDestroy();
 	}
 	

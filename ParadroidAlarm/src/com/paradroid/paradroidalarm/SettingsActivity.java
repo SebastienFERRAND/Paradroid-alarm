@@ -1,13 +1,12 @@
 package com.paradroid.paradroidalarm;
 
-import com.example.helper.ParamHelper;
-import com.example.paradroidalarm.R;
+import com.paradroid.paradroidalarm.R;
+import com.paradroid.helper.ParamHelper;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ToggleButton;

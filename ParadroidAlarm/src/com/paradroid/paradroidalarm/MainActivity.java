@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.adylitica.database.AlarmDataSource;
-import com.adylitica.database.DataBaseHelper;
-import com.example.helper.ParamHelper;
-import com.example.paradroidalarm.R;
 import com.paradroid.adapter.AlarmAdapter;
+import com.paradroid.database.AlarmDataSource;
+import com.paradroid.database.DataBaseHelper;
+import com.paradroid.helper.ParamHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -158,27 +157,33 @@ public class MainActivity extends FragmentActivity {
 			return new TimePickerDialog(getActivity(), this, hour, minute,
 					DateFormat.is24HourFormat(getActivity()));
 		}
-
-
+		
 		public void onDismiss(DialogInterface dialog){
 			super.onDismiss(dialog);
 		}
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			// Do something with the time chosen by the user
-			int id = createAlarm(hourOfDay, minute);
+			int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
+			ArrayList<Integer> days = new ArrayList<Integer>();
+			days.add(dayOfWeek);
 			if (fromModify){
-				ArrayList<Integer> days = MainActivity.nds.getDays(idToModify);
-				MainActivity.nds.deleteAlarm(idToModify);
-				MainActivity.offAndOut(idToModify);
-				MainActivity.nds.modifyDays(id, MainActivity.arrayListToInt(days));
+				days = MainActivity.nds.getDays(idToModify);
+				MainActivity.nds.modifyTime(idToModify, hourOfDay, minute);
+				MainActivity.on(idToModify, minute, hourOfDay, MainActivity.arrayListToInt(days));
+				//				MainActivity.offAndOut(idToModify);
+				//				MainActivity.nds.modifyTime(id, MainActivity.arrayListToInt(days));
+
+				fromModify = false;
+				Log.v("BEG", "MODIF ");
+			}else{
+				int id = createAlarm(hourOfDay, minute, days);
 			}
 
-			fromModify = false;
 		}
 	}
 
-	public static int createAlarm(int hourOfDay, int minute){
+	public static int createAlarm(int hourOfDay, int minute, ArrayList<Integer> days){
 
 		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
@@ -241,21 +246,23 @@ public class MainActivity extends FragmentActivity {
 
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
+
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
 
 		ArrayList<Integer> listDays = MainActivity.intToArray(days);
 
 		int nextDay;
 
 		nextDay = getNextRing(cal, listDays);
-		
-		if (nextDay == 0){
+
+		if ((nextDay == days) && (cal.before(today))){
 			cal.add(Calendar.DATE, 7);
 		}
-		
+
 		cal.set(Calendar.DAY_OF_WEEK, nextDay);
-		cal.set(Calendar.MINUTE, minute);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
 
 		c = nds.getAllAlarm();
 		aa.changeCursor(c);
@@ -264,15 +271,14 @@ public class MainActivity extends FragmentActivity {
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
+		intent.putExtra("days", days);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
 				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-		
-		Log.v("Test", "alarm " +  cal.toString());
-		
+
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
 	}
@@ -280,34 +286,50 @@ public class MainActivity extends FragmentActivity {
 	public static int getNextRing(Calendar cal, ArrayList<Integer> listDays) {
 		int day = cal.get(Calendar.DAY_OF_WEEK);
 		Calendar today = Calendar.getInstance();
+				for (int i = 0; i < listDays.size(); i++){
+					Log.v("BEG", "List days 2 " + listDays.get(i));
+					//			Log.v("DAYS", "List days " + MainActivity.fromIntToDay(listDays.get(i)));
+				}
 
 		if (!(listDays.size() == 0)){
-			for (int i = day; i <= listDays.size(); i++){
+			for (int i = day; i <= 7; i++){
 				if (listDays.contains(i)){
-					if ((today.get(Calendar.DAY_OF_WEEK) == day) && (cal.before(today))){
-						
+					Log.v("BEG", "CONTAINS " + i);
+					if (day == i){
+						if(cal.after(today)){
+							Log.v("BEG", "HERE 1");
+							return i;
+						}
+						//					}else{
+						//						Log.v("DAYS", "return " + MainActivity.fromIntToDay(listDays.get(i)));
 					}else{
+						Log.v("BEG", "HERE 2");
 						return i;
 					}
+
 				}
 			}
 
-			for (int i = 1; i <= day; i++){
+			for (int i = 1; i < day; i++){
 				if (listDays.contains(i)){
+					Log.v("BEG", "HERE 3");
 					return i;
 				}
 			}
 
 		}
-		return 0;
+		Log.v("BEG", "HERE 4");
+		return day;
 	}
 
 	public static ArrayList<Integer> intToArray(int days) {
 
 		ArrayList<Integer> arrayDays = new ArrayList<Integer>();
+		Log.v("DAYS", "List days " + days);
 
 		while (days > 0) {
-			arrayDays.add(days%10);
+			int value = days%10;
+			arrayDays.add(value);
 			days/=10;
 		}
 		return arrayDays;
@@ -317,7 +339,7 @@ public class MainActivity extends FragmentActivity {
 
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
-		minute +=5;
+		minute +=ParamHelper.getSnooze();
 		cal.set(Calendar.MINUTE, minute);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -346,6 +368,28 @@ public class MainActivity extends FragmentActivity {
 		df = new TimePickerFragment();
 		df.show(ma.getSupportFragmentManager(), "timePicker");
 
+	}
+
+	public static String fromIntToDay(int day){
+		String stringDay = "";
+		if (day == 1){
+			stringDay = ma.getString(R.string.day7);
+		}else if (day == 2){
+			stringDay = ma.getString(R.string.day1);
+		}else if (day == 3){
+			stringDay = ma.getString(R.string.day2);	
+		}else if (day == 4){
+			stringDay = ma.getString(R.string.day3);
+		}else if (day == 5){
+			stringDay = ma.getString(R.string.day4);
+		}else if (day == 6){
+			stringDay = ma.getString(R.string.day5);
+		}else if (day == 7){
+			stringDay = ma.getString(R.string.day6);
+
+		}
+
+		return stringDay;
 	}
 
 

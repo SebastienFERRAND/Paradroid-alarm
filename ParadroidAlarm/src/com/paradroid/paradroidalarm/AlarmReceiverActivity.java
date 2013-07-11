@@ -3,8 +3,8 @@ package com.paradroid.paradroidalarm;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.example.helper.ParamHelper;
-import com.example.paradroidalarm.R;
+import com.paradroid.paradroidalarm.R;
+import com.paradroid.helper.ParamHelper;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
@@ -49,12 +49,16 @@ public class AlarmReceiverActivity extends Activity {
 	private int id;
 	private int minute;
 	private int hour;
+	private ArrayList<Integer> listDays;
 	
 	private WakeLock wakeLock;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		ParamHelper.initParamHelper(this);
+		
 		Intent intent = getIntent();
 		
 		PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
@@ -68,7 +72,8 @@ public class AlarmReceiverActivity extends Activity {
 		id = intent.getIntExtra("id", 0);
 		minute = intent.getIntExtra("minute", 0);
 		hour = intent.getIntExtra("hourOfDay", 0);
-
+		int days = intent.getIntExtra("days", 0);
+		listDays = MainActivity.intToArray(days);
 		c = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.alarm);
@@ -361,7 +366,7 @@ public class AlarmReceiverActivity extends Activity {
 		stopALarmbool = true;
 		stopSound();
 		MainActivity.deleteAlarm(id);
-		MainActivity.createAlarm(hour, minute);
+		MainActivity.createAlarm(hour, minute, listDays);
         wakeLock.release();
 		
 		super.onDestroy();
