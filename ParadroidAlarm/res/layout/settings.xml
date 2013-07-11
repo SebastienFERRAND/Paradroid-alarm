@@ -30,7 +30,7 @@
             android:textOn="" />
     </RelativeLayout>
     
-    <RelativeLayout
+    <!-- <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -52,6 +52,6 @@
             android:layout_alignParentRight="true"
             android:inputType="number"
             android:text="5" />
-    </RelativeLayout>
+    </RelativeLayout> -->
 
 </LinearLayout>

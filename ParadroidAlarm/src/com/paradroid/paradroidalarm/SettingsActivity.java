@@ -14,7 +14,7 @@ import android.widget.ToggleButton;
 public class SettingsActivity extends Activity{
 	
 	private ToggleButton tb;
-	private EditText snoozeMinutes;
+//	private EditText snoozeMinutes;
 	
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class SettingsActivity extends Activity{
 		this.setContentView(R.layout.settings);
 		tb = (ToggleButton) findViewById(R.id.togglebuttontalk);
 		tb.setChecked(ParamHelper.getTalk());
-		snoozeMinutes = (EditText) findViewById(R.id.pick_time_snooze);
+		/*snoozeMinutes = (EditText) findViewById(R.id.pick_time_snooze);
 		
 		snoozeMinutes.addTextChangedListener(new TextWatcher() {
 			
@@ -42,7 +42,7 @@ public class SettingsActivity extends Activity{
 			public void afterTextChanged(Editable ed) {
 				ParamHelper.pushSnooze(Float.parseFloat(ed.toString()));
 			}
-		});
+		});*/
 	}
 
 	public void onToggleClicked(View view) {
