@@ -13,7 +13,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 
 public class AlarmDataSource {
 
@@ -22,7 +21,7 @@ public class AlarmDataSource {
 	private static String[] allColumnsAlarm = { DataBaseHelper.DATABASE_ID_ALARM,
 		DataBaseHelper.DATABASE_HOUR_ALARM,DataBaseHelper.DATABASE_MINUTE_ALARM,
 		DataBaseHelper.DATABASE_DAY_ALARM, DataBaseHelper.DATABASE_SOUND_ALARM,
-		DataBaseHelper.DATABASE_TIME_SNOOZE_ALARM};
+		DataBaseHelper.DATABASE_TIME_SNOOZE_ALARM, DataBaseHelper.DATABASE_ON_OFF_ALARM };
 
 	private static String[] dayColumn = {DataBaseHelper.DATABASE_DAY_ALARM};
 
@@ -46,19 +45,19 @@ public class AlarmDataSource {
 	public int createAlarm(int hour, int minute, int day, int snooze) {
 
 		sqlLtSt = database.compileStatement("INSERT INTO " + DataBaseHelper.DATABASE_TABLE_ALARM 
-				+ " VALUES(NULL, ?, ?, ?, '', ?)");
+				+ " VALUES(NULL, ?, ?, ?, '', ?, ?)");
 		sqlLtSt.bindLong(1, hour);
 		sqlLtSt.bindLong(2, minute);
 		sqlLtSt.bindLong(3, day);
 		sqlLtSt.bindLong(4, snooze);
+		sqlLtSt.bindLong(5, 1);
 		int id = (int) sqlLtSt.executeInsert();
-		Log.v("ID", "id : " + id);
 		return id;
 
 	}
 
 	public Cursor getAllAlarm() {
-
+		
 		Cursor cursor = database.query(DataBaseHelper.DATABASE_TABLE_ALARM, 
 				allColumnsAlarm,
 				null,
@@ -105,8 +104,6 @@ public class AlarmDataSource {
 
 		cursor.moveToFirst();
 		int day = cursor.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT);
-
-		Log.v("Test", day + " : day");
 		
 		days = MainActivity.intToArray(day);
 		
@@ -123,6 +120,13 @@ public class AlarmDataSource {
 		ContentValues args = new ContentValues();
 		args.put(DataBaseHelper.DATABASE_HOUR_ALARM, hour);
 		args.put(DataBaseHelper.DATABASE_MINUTE_ALARM, minute);
+		database.update(DataBaseHelper.DATABASE_TABLE_ALARM, args, DataBaseHelper.DATABASE_ID_ALARM + "=" + id, null);
+		
+	}
+
+	public void modifyCheck(int id, int i) {
+		ContentValues args = new ContentValues();
+		args.put(DataBaseHelper.DATABASE_ON_OFF_ALARM, i);
 		database.update(DataBaseHelper.DATABASE_TABLE_ALARM, args, DataBaseHelper.DATABASE_ID_ALARM + "=" + id, null);
 		
 	}

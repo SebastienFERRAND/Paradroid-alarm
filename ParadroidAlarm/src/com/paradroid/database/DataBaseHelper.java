@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DataBaseHelper extends SQLiteOpenHelper{
 
@@ -18,6 +17,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	public static final String DATABASE_DAY_ALARM = "day";
 	public static final String DATABASE_SOUND_ALARM = "sound";
 	public static final String DATABASE_TIME_SNOOZE_ALARM = "time_snooze";
+	public static final String DATABASE_ON_OFF_ALARM = "on_off";
+	
 
 
 	public static final int DATABASE_ID_ALARM_INT = 0;
@@ -26,9 +27,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	public static final int DATABASE_DAY_ALARM_INT = 3;
 	public static final int DATABASE_SOUND_ALARM_INT = 4;
 	public static final int DATABASE_TIME_SNOOZE_ALARM_INT = 5;
+	public static final int DATABASE_ON_OFF_INT = 6;
 
 	public DataBaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, 1);
+		super(context, DATABASE_NAME, null, 5);
 	}
 
 	@Override
@@ -40,13 +42,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 				+ DATABASE_MINUTE_ALARM + " INTEGER, "
 				+ DATABASE_DAY_ALARM + " INTEGER, "
 				+ DATABASE_SOUND_ALARM + " TEXT DEFAULT \'default\', "  
-				+ DATABASE_TIME_SNOOZE_ALARM + " INTEGER )");
+				+ DATABASE_TIME_SNOOZE_ALARM + " INTEGER, "  
+				+ DATABASE_ON_OFF_ALARM + " INTEGER )");
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+		db.execSQL("DROP TABLE " + DATABASE_TABLE_ALARM);
+		onCreate(db);
 	}
 
 }

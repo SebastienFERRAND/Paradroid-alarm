@@ -2,7 +2,6 @@ package com.paradroid.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class ParamHelper {
 

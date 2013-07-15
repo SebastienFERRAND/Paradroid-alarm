@@ -79,7 +79,6 @@ public class AlarmReceiverActivity extends Activity {
 		setContentView(R.layout.alarm);
 
 		Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
-
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 		stopAlarm.setOnTouchListener(new OnTouchListener() {
@@ -349,10 +348,10 @@ public class AlarmReceiverActivity extends Activity {
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			ArrayList<String> matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
-			Log.v("Test", "recognize : " + matches.get(0));
-			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top")){
+			Log.v("Test", matches.get(0));
+			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top") || matches.get(0).contains("sup")){
 				finish();
-			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")){
+			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")|| matches.get(0).contains("snooze")|| matches.get(0).contains("this")){
 				// snooze but don't use same id
 				MainActivity.snooze(id, minute, hour);
 				finish();

@@ -9,6 +9,8 @@
         android:id="@+id/stopAlarm"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="Stop alarm" />
+        android:text="Stop"
+        android:textSize="20sp"
+        android:textStyle="bold" />
  
 </RelativeLayout>

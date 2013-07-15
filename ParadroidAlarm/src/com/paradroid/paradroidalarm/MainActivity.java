@@ -101,8 +101,7 @@ public class MainActivity extends FragmentActivity {
 
 			nds.deleteAlarm((int) info.id);
 
-			c = nds.getAllAlarm();
-			aa.changeCursor(c);
+			refresh();
 
 			Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 			PendingIntent pendingIntent = PendingIntent.getActivity(ma,
@@ -157,7 +156,7 @@ public class MainActivity extends FragmentActivity {
 			return new TimePickerDialog(getActivity(), this, hour, minute,
 					DateFormat.is24HourFormat(getActivity()));
 		}
-		
+
 		public void onDismiss(DialogInterface dialog){
 			super.onDismiss(dialog);
 		}
@@ -173,7 +172,7 @@ public class MainActivity extends FragmentActivity {
 				MainActivity.on(idToModify, minute, hourOfDay, MainActivity.arrayListToInt(days));
 				//				MainActivity.offAndOut(idToModify);
 				//				MainActivity.nds.modifyTime(id, MainActivity.arrayListToInt(days));
-
+				refresh();
 				fromModify = false;
 				Log.v("BEG", "MODIF ");
 			}else{
@@ -187,8 +186,7 @@ public class MainActivity extends FragmentActivity {
 
 		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
-		c = nds.getAllAlarm();
-		aa.changeCursor(c);
+		refresh();
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();
 		MainActivity.on(id, minute, hourOfDay, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
@@ -222,6 +220,8 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public static void off(int id) {
+		//		c = nds.getAllAlarm();
+		//		aa.changeCursor(c);
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -238,9 +238,10 @@ public class MainActivity extends FragmentActivity {
 				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
 		am.cancel(pendingIntent);
 
-		c = nds.getAllAlarm();
-		aa.changeCursor(c);
+		refresh();
 	}
+
+
 
 	public static void on(int id, int minute, int hourOfDay, int days) {
 
@@ -264,8 +265,8 @@ public class MainActivity extends FragmentActivity {
 
 		cal.set(Calendar.DAY_OF_WEEK, nextDay);
 
-		c = nds.getAllAlarm();
-		aa.changeCursor(c);
+		//		c = nds.getAllAlarm();
+		//		aa.changeCursor(c);
 
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
@@ -286,24 +287,20 @@ public class MainActivity extends FragmentActivity {
 	public static int getNextRing(Calendar cal, ArrayList<Integer> listDays) {
 		int day = cal.get(Calendar.DAY_OF_WEEK);
 		Calendar today = Calendar.getInstance();
-				for (int i = 0; i < listDays.size(); i++){
-					Log.v("BEG", "List days 2 " + listDays.get(i));
-					//			Log.v("DAYS", "List days " + MainActivity.fromIntToDay(listDays.get(i)));
-				}
+		for (int i = 0; i < listDays.size(); i++){
+			//			Log.v("DAYS", "List days " + MainActivity.fromIntToDay(listDays.get(i)));
+		}
 
 		if (!(listDays.size() == 0)){
 			for (int i = day; i <= 7; i++){
 				if (listDays.contains(i)){
-					Log.v("BEG", "CONTAINS " + i);
 					if (day == i){
 						if(cal.after(today)){
-							Log.v("BEG", "HERE 1");
 							return i;
 						}
 						//					}else{
 						//						Log.v("DAYS", "return " + MainActivity.fromIntToDay(listDays.get(i)));
 					}else{
-						Log.v("BEG", "HERE 2");
 						return i;
 					}
 
@@ -312,21 +309,17 @@ public class MainActivity extends FragmentActivity {
 
 			for (int i = 1; i < day; i++){
 				if (listDays.contains(i)){
-					Log.v("BEG", "HERE 3");
 					return i;
 				}
 			}
 
 		}
-		Log.v("BEG", "HERE 4");
 		return day;
 	}
 
 	public static ArrayList<Integer> intToArray(int days) {
 
 		ArrayList<Integer> arrayDays = new ArrayList<Integer>();
-		Log.v("DAYS", "List days " + days);
-
 		while (days > 0) {
 			int value = days%10;
 			arrayDays.add(value);
@@ -339,7 +332,7 @@ public class MainActivity extends FragmentActivity {
 
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
-		minute +=ParamHelper.getSnooze();
+		minute += ParamHelper.getSnooze();
 		cal.set(Calendar.MINUTE, minute);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -388,9 +381,11 @@ public class MainActivity extends FragmentActivity {
 			stringDay = ma.getString(R.string.day6);
 
 		}
-
 		return stringDay;
 	}
 
-
+	public static void refresh() {
+		c = nds.getAllAlarm();
+		aa.changeCursor(c);
+	}
 }

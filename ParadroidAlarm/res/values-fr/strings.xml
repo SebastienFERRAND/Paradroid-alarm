@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Paradroid Alarm</string>
+    <string name="action_settings">Menu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu">Reglages</string>
+    <string name="snoozeafter">Repousser fera sonner dans :</string>
+    <string name="add_alarm">+</string>
+    <string name="instructions">Instructions : Lorsque le reveil sonne, vous pouvez l\'arreter manuelement avant le bip, ou dire \"stop\" apres le bip pour stopper l\'alarme, ou \"snooze\" pour repousser la sonnerie</string>
+    
+    <string name="contact">contacter le developpeur</string>
+    
+    
+    <string name="day1">Lundi</string>
+    <string name="day2">Mardi</string>
+    <string name="day3">Mercredi</string>
+    <string name="day4">Jeudi</string>
+    <string name="day5">Vendredi</string>
+    <string name="day6">Samedi</string>
+    <string name="day7">Dimanche</string>
+    
+    
+
+</resources>

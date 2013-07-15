@@ -15,6 +15,7 @@ import com.paradroid.paradroidalarm.MainActivity.TimePickerFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,31 +32,25 @@ import android.widget.ToggleButton;
 public class AlarmAdapter extends CursorAdapter {
 	private LayoutInflater mLayoutInflater;
 	private Context mContext;
-	private ToggleButton onOff;
 	private TimePickerFragment df;
+	private Typeface tf ;
 	public AlarmAdapter(Context context, Cursor c) {
 		super(context, c);
 		mContext = context;
 		mLayoutInflater = LayoutInflater.from(context); 
+		tf = Typeface.createFromAsset(context.getAssets(),"fonts/digital-7.ttf");
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+
 		View v = mLayoutInflater.inflate(R.layout.alarm_row, parent, false);
 
-
 		TextView hour_text = (TextView) v.findViewById(R.id.time);
-		if (hour_text != null) {
-		}
+		hour_text.setTypeface(tf);
 
 		TextView day_text = (TextView) v.findViewById(R.id.days);
-		if (day_text != null) {
-		}
-
-		onOff = (ToggleButton) v.findViewById(R.id.togglebuttononoff);
-		onOff.setChecked(true);
-
-		Button deleteAlarm = (Button) v.findViewById(R.id.deleteAlarm);
+		day_text.setTypeface(tf);
 
 		return v;
 	}
@@ -67,11 +62,24 @@ public class AlarmAdapter extends CursorAdapter {
 		int hour = (int) c.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
 		int minute = (int) c.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
 		int day = (int) c.getDouble(DataBaseHelper.DATABASE_DAY_ALARM_INT);
+		int onOff = (int) c.getDouble(DataBaseHelper.DATABASE_ON_OFF_INT);
+
 		/**
 		 * Set Date
 		 */
 
-		 TextView hour_text = (TextView) v.findViewById(R.id.time);
+		boolean onOffb = true;
+
+		if(onOff == 1){
+			onOffb = true;
+		}else{
+			onOffb = false;
+		}
+
+		ToggleButton onOffButton = (ToggleButton) v.findViewById(R.id.togglebuttononoff);
+		onOffButton.setChecked(onOffb);
+
+		TextView hour_text = (TextView) v.findViewById(R.id.time);
 		String zeroHour ="";
 		String zeroMinute ="";
 		if (hour_text != null) {
@@ -91,7 +99,6 @@ public class AlarmAdapter extends CursorAdapter {
 			public void onClick(View v) {
 				MainActivity.fromModify = true;
 				MainActivity.idToModify = (Integer) v.getTag();
-				Log.v("ID", "id time : " + MainActivity.idToModify);
 				MainActivity.loadTimer();
 			}
 		});
@@ -99,11 +106,9 @@ public class AlarmAdapter extends CursorAdapter {
 
 		GregorianCalendar calendar = new GregorianCalendar();
 
-		//        Log.v("DAYS", "THIS IS THE LIST" + day);
+		//        lov.v("DAYS", "THIS IS THE LIST" + day);
 
 		ArrayList<Integer> listDays = MainActivity.intToArray(day);
-
-		Log.v("BEG", "TO ISENGARD ");
 
 		calendar.set(Calendar.MINUTE, minute);
 		calendar.set(Calendar.SECOND, 0);
@@ -114,7 +119,7 @@ public class AlarmAdapter extends CursorAdapter {
 
 		TextView day_text = (TextView) v.findViewById(R.id.days);
 		if (day_text != null) {
-			//        	Log.v("DAYS", numberDay + " ; numberDay");
+			//        	lov.v("DAYS", numberDay + " ; numberDay");
 			day_text.setText(MainActivity.fromIntToDay(numberDay));
 		}
 
@@ -129,26 +134,29 @@ public class AlarmAdapter extends CursorAdapter {
 			}
 		});
 
-		onOff = (ToggleButton) v.findViewById(R.id.togglebuttononoff);
-		onOff.setChecked(true);
-		onOff.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		onOffButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 				int id = (Integer) buttonView.getTag();
 
-				Cursor cur = MainActivity.nds.getAlarm((int) id);
-				cur.moveToFirst();
-				int hourP = (int) cur.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
-				int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
+				Log.v("Test", "PASSE PEUCHERE" + id);
 
-				if (isChecked){
-					Cursor c = MainActivity.nds.getAlarm(id);
-					c.moveToFirst();
-					MainActivity.on(id, minuteP, hourP, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
-				}else{
-					MainActivity.off(id);
+				Cursor cur = MainActivity.nds.getAlarm(id);
+				if (cur.getCount() !=0){
+
+					cur.moveToFirst();
+					int hourP = (int) cur.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
+					int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
+
+					if (isChecked){
+						MainActivity.nds.modifyCheck(id, 1);
+						MainActivity.on(id, minuteP, hourP, cur.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+					}else{
+						MainActivity.nds.modifyCheck(id, 0);
+						MainActivity.off(id);
+					}
 				}
 
 			}
@@ -165,10 +173,18 @@ public class AlarmAdapter extends CursorAdapter {
 				MainActivity.offAndOut(id);
 			}
 		});
-		onOff.setTag(_id);
+		onOffButton.setTag(_id);
 		deleteAlarm.setTag(_id);
 		day_text.setTag(_id);
 		hour_text.setTag(_id);
 
+	}
+
+
+	public static class ViewHolder {
+		public ToggleButton togglebuttononoff;
+		public TextView time;
+		public TextView days;
+		public Button deleteAlarm;
 	}
 }
