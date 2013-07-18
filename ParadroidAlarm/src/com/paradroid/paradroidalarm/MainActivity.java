@@ -10,6 +10,7 @@ import com.paradroid.database.DataBaseHelper;
 import com.paradroid.helper.ParamHelper;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -54,6 +55,10 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		ActionBar ab = getActionBar(); 
+		//		ab.setDisplayShowTitleEnabled(false); 
+		//		ab.setDisplayShowHomeEnabled(false);
+
 		ParamHelper.initParamHelper(this);
 
 		ma = this;
@@ -83,12 +88,21 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.mainmenu, menu);
+		return true;
+	} 
+
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.delete_or_update_time_menu, menu);
 	}
+
+
 
 
 	@Override
@@ -121,25 +135,22 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+
+		switch (item.getItemId()) {
 		// do stuff with CalendarContract
-		switch(item.getItemId())
-		{
-		case 1:
+		case R.id.action_settings:
 			Intent viewIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(viewIntent, 2);
 
-			return false;
+			break;
+
+		default:
+			break;
 		}
+
 
 		return super.onOptionsItemSelected(item);
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action
-		menu.add(1, 1, 0, "Settings");
-		return true;
 	}
 
 	public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener,

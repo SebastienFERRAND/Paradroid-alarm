@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="5dip"
         android:text="@string/menu"
-        android:textColor="#B0E0E6"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
     <!--
@@ -83,7 +83,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="5dip"
             android:text="@string/instructions"
-            android:textColor="#B0E0E6"
+            android:textColor="#FFFFFF"
             android:textSize="16sp" />
     </RelativeLayout>
 

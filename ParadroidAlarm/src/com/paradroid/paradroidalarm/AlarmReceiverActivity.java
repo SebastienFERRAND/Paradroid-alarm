@@ -53,6 +53,8 @@ public class AlarmReceiverActivity extends Activity {
 	
 	private WakeLock wakeLock;
 	
+	private int numberOfLoop = 0;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -270,6 +272,15 @@ public class AlarmReceiverActivity extends Activity {
 	}
 
 	private void playSoundMusic(Context context, Uri alert) {
+		
+		numberOfLoop++;
+		if (numberOfLoop > 10){
+			stopSound();
+			stopALarmbool = true;
+			finish();
+		}
+		
+		
 		mMediaPlayer = new MediaPlayer();
 		try {
 			mMediaPlayer.setDataSource(context, alert);
