@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CheckBox;
 
 
@@ -93,7 +94,7 @@ public class PickADayActivity extends Activity {
 		}
 		
 		MainActivity.nds.modifyDays(id, days);
-		
+
 		MainActivity.off(id);
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();

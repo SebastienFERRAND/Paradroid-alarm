@@ -7,8 +7,8 @@
     <string name="menu">Reglages</string>
     <string name="snoozeafter">Repousser fera sonner dans :</string>
     <string name="add_alarm">+</string>
-    <string name="instructions">Instructions : Lorsque le reveil sonne, vous pouvez l\'arreter manuelement avant le bip, ou dire \"stop\" apres le bip pour stopper l\'alarme, ou \"snooze\" pour repousser la sonnerie</string>
-    
+    <string name="stop">Dites "stop" ou "snooze"</string>
+      
     <string name="contact">contacter le developpeur</string>
     
     

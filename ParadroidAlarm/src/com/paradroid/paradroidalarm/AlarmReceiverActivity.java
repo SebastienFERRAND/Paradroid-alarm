@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.paradroid.paradroidalarm.R;
+import com.paradroid.database.AlarmDataSource;
+import com.paradroid.database.DataBaseHelper;
 import com.paradroid.helper.ParamHelper;
 
 import android.app.Activity;
@@ -11,6 +13,7 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -41,7 +44,7 @@ public class AlarmReceiverActivity extends Activity {
 	private static final int REQUEST_CODE = 1234;
 
 	private boolean stopALarmbool = false;
-	private Context c;
+	private Context con;
 
 	private Handler handlerRecon = new Handler();
 	private Handler handlerSound = new Handler();
@@ -49,34 +52,37 @@ public class AlarmReceiverActivity extends Activity {
 	private int id;
 	private int minute;
 	private int hour;
+	private int onOffp;
 	private ArrayList<Integer> listDays;
-	
+	public AlarmDataSource ndsA;
+
 	private WakeLock wakeLock;
-	
+
 	private int numberOfLoop = 0;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		ParamHelper.initParamHelper(this);
-		
+
 		Intent intent = getIntent();
-		
+
 		PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
-        wakeLock.acquire();
-        
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-        	    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-        	    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+		wakeLock = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "TAG");
+		wakeLock.acquire();
+
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+				| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
 		id = intent.getIntExtra("id", 0);
 		minute = intent.getIntExtra("minute", 0);
 		hour = intent.getIntExtra("hourOfDay", 0);
 		int days = intent.getIntExtra("days", 0);
+
 		listDays = MainActivity.intToArray(days);
-		c = this;
+		con = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.alarm);
 
@@ -94,15 +100,21 @@ public class AlarmReceiverActivity extends Activity {
 			}
 		});
 
-		//        while (alarmOn){
-			if(ParamHelper.getTalk()){
-				playSoundTalk(c);
-			}else{
-				playSoundMusic(c, getAlarmUri());
-			}
-			handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second.
-			//        }
+		ndsA = new AlarmDataSource(con);
+		Cursor c = ndsA.getAlarm(id);
+		c.moveToFirst();
+		int onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
 
+		if (onOffp == 0){
+			this.finish();
+		}
+
+		if(ParamHelper.getTalk()){
+			playSoundTalk(con);
+		}else{
+			playSoundMusic(con, getAlarmUri());
+		}
+		handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second
 	}
 
 	//Here's a runnable/handler combo
@@ -120,11 +132,11 @@ public class AlarmReceiverActivity extends Activity {
 		}
 
 		private void playBip() {
-			
+
 			mMediaPlayer4 = new MediaPlayer();
 
 			//SON 1
-			AssetFileDescriptor afd = c.getResources().openRawResourceFd(R.raw.beep);
+			AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.beep);
 			try {
 				mMediaPlayer4.reset();
 				mMediaPlayer4.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
@@ -135,7 +147,7 @@ public class AlarmReceiverActivity extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			try {
 				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
 					mMediaPlayer4.setAudioStreamType(AudioManager.STREAM_ALARM);
@@ -147,7 +159,7 @@ public class AlarmReceiverActivity extends Activity {
 			catch (IllegalArgumentException e) {    } 
 			catch (IllegalStateException e) { } 
 			catch (IOException e) { } 
-			
+
 		}
 	};
 
@@ -161,9 +173,9 @@ public class AlarmReceiverActivity extends Activity {
 				finishActivity(REQUEST_CODE);
 
 				if(ParamHelper.getTalk()){
-					playSoundTalk(c);
+					playSoundTalk(con);
 				}else{
-					playSoundMusic(c, getAlarmUri());
+					playSoundMusic(con, getAlarmUri());
 				}
 				handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 5 second.
 			}
@@ -176,7 +188,7 @@ public class AlarmReceiverActivity extends Activity {
 		mMediaPlayer3 = new MediaPlayer();
 
 		//SON 1
-		AssetFileDescriptor afd = c.getResources().openRawResourceFd(R.raw.hour);
+		AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.hour);
 		try {
 			mMediaPlayer1.reset();
 			mMediaPlayer1.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
@@ -189,7 +201,7 @@ public class AlarmReceiverActivity extends Activity {
 		}
 
 		//SON 2
-		AssetFileDescriptor afd2 = c.getResources().openRawResourceFd(R.raw.minute);
+		AssetFileDescriptor afd2 = con.getResources().openRawResourceFd(R.raw.minute);
 		try {
 			mMediaPlayer2.reset();
 			mMediaPlayer2.setDataSource(afd2.getFileDescriptor(), afd2.getStartOffset(), afd2.getDeclaredLength());
@@ -202,7 +214,7 @@ public class AlarmReceiverActivity extends Activity {
 		}
 
 		//SON 3
-		AssetFileDescriptor afd3 = c.getResources().openRawResourceFd(R.raw.talky);
+		AssetFileDescriptor afd3 = con.getResources().openRawResourceFd(R.raw.talky);
 		try {
 			mMediaPlayer3.reset();
 			mMediaPlayer3.setDataSource(afd3.getFileDescriptor(), afd3.getStartOffset(), afd3.getDeclaredLength());
@@ -272,15 +284,15 @@ public class AlarmReceiverActivity extends Activity {
 	}
 
 	private void playSoundMusic(Context context, Uri alert) {
-		
+
 		numberOfLoop++;
 		if (numberOfLoop > 10){
 			stopSound();
 			stopALarmbool = true;
 			finish();
 		}
-		
-		
+
+
 		mMediaPlayer = new MediaPlayer();
 		try {
 			mMediaPlayer.setDataSource(context, alert);
@@ -375,10 +387,13 @@ public class AlarmReceiverActivity extends Activity {
 	public void onDestroy(){
 		stopALarmbool = true;
 		stopSound();
-		MainActivity.deleteAlarm(id);
-		MainActivity.createAlarm(hour, minute, listDays);
-        wakeLock.release();
-		
+		//		MainActivity.deleteAlarm(id);
+		Cursor c = MainActivity.nds.getAlarm(id);
+		c.moveToFirst();
+		MainActivity.on(id, hour, minute, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+		MainActivity.refresh();
+		wakeLock.release();
+
 		super.onDestroy();
 	}
 }	

@@ -7,9 +7,9 @@
     <string name="menu">Settings</string>
     <string name="snoozeafter">Snooze will ring after :</string>
     <string name="add_alarm">+</string>
-    <string name="instructions">Instructions : Whenever the alarm ring you can manually stop it before the bip, or say \"stop\" after the bip to stop it, or \"snooze\" to postpone the alarm</string>
+    <string name="stop">Say "stop" or "snooze"</string>
     
-    <string name="contact">contact developper</string>
+    <string name="contact">send feedback</string>
     
     <string name="day1">Monday</string>
     <string name="day2">Tuesday</string>

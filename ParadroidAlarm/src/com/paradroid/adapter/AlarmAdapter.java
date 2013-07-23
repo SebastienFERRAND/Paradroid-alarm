@@ -1,5 +1,4 @@
 package com.paradroid.adapter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import com.paradroid.paradroidalarm.R;
+import com.paradroid.business.RowInfo;
 import com.paradroid.database.DataBaseHelper;
 import com.paradroid.paradroidalarm.MainActivity;
 import com.paradroid.paradroidalarm.PickADayActivity;
@@ -16,11 +16,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -28,12 +33,21 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
+
 
 public class AlarmAdapter extends CursorAdapter {
 	private LayoutInflater mLayoutInflater;
 	private Context mContext;
 	private TimePickerFragment df;
 	private Typeface tf ;
+
+	static final int ANIMATION_DURATION = 200;
+	
 	public AlarmAdapter(Context context, Cursor c) {
 		super(context, c);
 		mContext = context;
@@ -49,8 +63,8 @@ public class AlarmAdapter extends CursorAdapter {
 		TextView hour_text = (TextView) v.findViewById(R.id.time);
 		hour_text.setTypeface(tf);
 
-		TextView day_text = (TextView) v.findViewById(R.id.days);
-		day_text.setTypeface(tf);
+		//		TextView day_text = (TextView) v.findViewById(R.id.days);
+		//		day_text.setTypeface(tf);
 
 		return v;
 	}
@@ -82,6 +96,7 @@ public class AlarmAdapter extends CursorAdapter {
 		TextView hour_text = (TextView) v.findViewById(R.id.time);
 		String zeroHour ="";
 		String zeroMinute ="";
+		String ampm ="";
 		if (hour_text != null) {
 			if (hour < 10){
 				zeroHour = "0";
@@ -90,7 +105,20 @@ public class AlarmAdapter extends CursorAdapter {
 			if (minute < 10){
 				zeroMinute = "0";
 			}
-			hour_text.setText(zeroHour + hour + ":" + zeroMinute + minute);
+
+			if (!DateFormat.is24HourFormat(mContext))
+			{
+				if(hour>12)
+				{
+					hour -= 12;
+					ampm = "pm";
+				} else {
+					ampm = "am";
+				}
+			}else{
+				
+			}
+			hour_text.setText(zeroHour + hour + ":" + zeroMinute + minute + " " + ampm);
 		}
 
 		hour_text.setOnClickListener(new OnClickListener() {
@@ -98,7 +126,7 @@ public class AlarmAdapter extends CursorAdapter {
 			@Override
 			public void onClick(View v) {
 				MainActivity.fromModify = true;
-				MainActivity.idToModify = (Integer) v.getTag();
+				MainActivity.idTime = (Integer) v.getTag();
 				MainActivity.loadTimer();
 			}
 		});
@@ -119,7 +147,6 @@ public class AlarmAdapter extends CursorAdapter {
 
 		TextView day_text = (TextView) v.findViewById(R.id.days);
 		if (day_text != null) {
-			//        	lov.v("DAYS", numberDay + " ; numberDay");
 			day_text.setText(MainActivity.fromIntToDay(numberDay));
 		}
 
@@ -141,8 +168,6 @@ public class AlarmAdapter extends CursorAdapter {
 
 				int id = (Integer) buttonView.getTag();
 
-				Log.v("Test", "PASSE PEUCHERE" + id);
-
 				Cursor cur = MainActivity.nds.getAlarm(id);
 				if (cur.getCount() !=0){
 
@@ -152,10 +177,10 @@ public class AlarmAdapter extends CursorAdapter {
 
 					if (isChecked){
 						MainActivity.nds.modifyCheck(id, 1);
-						MainActivity.on(id, minuteP, hourP, cur.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+//						MainActivity.on(id, minuteP, hourP, cur.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 					}else{
 						MainActivity.nds.modifyCheck(id, 0);
-						MainActivity.off(id);
+//						MainActivity.off(id);
 					}
 				}
 
@@ -168,23 +193,68 @@ public class AlarmAdapter extends CursorAdapter {
 
 			@Override
 			public void onClick(View v) {
-				int id = (Integer) v.getTag();
-				MainActivity.nds.deleteAlarm(id);
-				MainActivity.offAndOut(id);
+				RowInfo rid = (RowInfo) v.getTag();
+				deleteCell(rid.v, rid.indexInfo, rid.idInfo);
+				MainActivity.offAndOut(rid.idInfo);
 			}
 		});
+
+		RowInfo ri = new RowInfo(_id, v.getId(), v);
+		deleteAlarm.setTag(ri);
+		
 		onOffButton.setTag(_id);
-		deleteAlarm.setTag(_id);
 		day_text.setTag(_id);
 		hour_text.setTag(_id);
 
 	}
 
 
-	public static class ViewHolder {
-		public ToggleButton togglebuttononoff;
-		public TextView time;
-		public TextView days;
-		public Button deleteAlarm;
+//	public static class ViewHolder {
+//		public ToggleButton togglebuttononoff;
+//		public TextView time;
+//		public TextView days;
+//		public Button deleteAlarm;
+//	}
+	
+	private void deleteCell(final View v, final int index, final int id) {
+		AnimationListener al = new AnimationListener() {
+			@Override
+			public void onAnimationEnd(Animation arg0) {
+				MainActivity.nds.deleteAlarm(id);
+				MainActivity.refresh();
+			}
+			@Override public void onAnimationRepeat(Animation animation) {}
+			@Override public void onAnimationStart(Animation animation) {}
+		};
+
+		collapse(v, al);
+	}
+
+	private void collapse(final View v, AnimationListener al) {
+		final int initialHeight = v.getMeasuredHeight();
+
+		Animation anim = new Animation() {
+			@Override
+			protected void applyTransformation(float interpolatedTime, Transformation t) {
+				if (interpolatedTime == 1) {
+					v.setVisibility(View.GONE);
+				}
+				else {
+					v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+					v.requestLayout();
+				}
+			}
+
+			@Override
+			public boolean willChangeBounds() {
+				return true;
+			}
+		};
+
+		if (al!=null) {
+			anim.setAnimationListener(al);
+		}
+		anim.setDuration(ANIMATION_DURATION);
+		v.startAnimation(anim);
 	}
 }

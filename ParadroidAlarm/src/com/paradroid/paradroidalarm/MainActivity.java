@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.paradroid.adapter.AlarmAdapter;
 import com.paradroid.database.AlarmDataSource;
 import com.paradroid.database.DataBaseHelper;
 import com.paradroid.helper.ParamHelper;
 
 import android.os.Bundle;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -20,26 +23,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TimePicker;
-import android.widget.ToggleButton;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends SherlockFragmentActivity {
 
 	public static final String APP_TAG = "AlarmApp";
-	private Button addAlarm;
 	private static TimePickerFragment df;
 	private ListView listAlarms;
 	private static Cursor c;
@@ -48,14 +39,14 @@ public class MainActivity extends FragmentActivity {
 	public static MainActivity ma;
 
 	public static boolean fromModify = false;
-	public static int idToModify;
+	public static int idTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		ActionBar ab = getActionBar(); 
+		//		ActionBar ab = getActionBar(); 
 		//		ab.setDisplayShowTitleEnabled(false); 
 		//		ab.setDisplayShowHomeEnabled(false);
 
@@ -67,13 +58,11 @@ public class MainActivity extends FragmentActivity {
 
 		c = nds.getAllAlarm();
 		aa = new AlarmAdapter(this, c);
-
-
+		
 		listAlarms = (ListView) findViewById(R.id.listAlarm);
-
 		listAlarms.setAdapter(aa);
 
-		addAlarm = (Button) findViewById(R.id.add_alarm);
+		/*addAlarm = (Button) findViewById(R.id.add_alarm);
 		addAlarm.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -81,7 +70,7 @@ public class MainActivity extends FragmentActivity {
 
 				loadTimer();
 			}
-		});
+		});*/
 
 		registerForContextMenu(listAlarms);
 
@@ -89,24 +78,24 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
 		return true;
 	} 
 
-	@Override
+	/*@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 
 		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.delete_or_update_time_menu, menu);
-	}
+	}*/
 
 
 
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		if(item.getTitle().equals("Edit Alarm")) {
 
@@ -144,13 +133,15 @@ public class MainActivity extends FragmentActivity {
 
 			break;
 
+		case R.id.add_alarm:
+			loadTimer();
+
+			break;
+
 		default:
 			break;
 		}
-
-
 		return super.onOptionsItemSelected(item);
-
 	}
 
 	public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener,
@@ -177,15 +168,14 @@ public class MainActivity extends FragmentActivity {
 			int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 			ArrayList<Integer> days = new ArrayList<Integer>();
 			days.add(dayOfWeek);
+			Cursor c = MainActivity.nds.getAlarm(idTime);
+			c.moveToFirst();
 			if (fromModify){
-				days = MainActivity.nds.getDays(idToModify);
-				MainActivity.nds.modifyTime(idToModify, hourOfDay, minute);
-				MainActivity.on(idToModify, minute, hourOfDay, MainActivity.arrayListToInt(days));
-				//				MainActivity.offAndOut(idToModify);
-				//				MainActivity.nds.modifyTime(id, MainActivity.arrayListToInt(days));
+				days = MainActivity.nds.getDays(idTime);
+				MainActivity.nds.modifyTime(idTime, hourOfDay, minute);
+				MainActivity.on(idTime, minute, hourOfDay, MainActivity.arrayListToInt(days));
 				refresh();
 				fromModify = false;
-				Log.v("BEG", "MODIF ");
 			}else{
 				int id = createAlarm(hourOfDay, minute, days);
 			}
@@ -197,6 +187,7 @@ public class MainActivity extends FragmentActivity {
 
 		int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 		int id = nds.createAlarm(hourOfDay, minute, dayOfWeek, 5);
+		idTime = id;
 		refresh();
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();
@@ -251,9 +242,7 @@ public class MainActivity extends FragmentActivity {
 
 		refresh();
 	}
-
-
-
+	
 	public static void on(int id, int minute, int hourOfDay, int days) {
 
 		//Create an offset from the current time in which the alarm will go off.
@@ -270,14 +259,11 @@ public class MainActivity extends FragmentActivity {
 
 		nextDay = getNextRing(cal, listDays);
 
-		if ((nextDay == days) && (cal.before(today))){
-			cal.add(Calendar.DATE, 7);
-		}
-
 		cal.set(Calendar.DAY_OF_WEEK, nextDay);
 
-		//		c = nds.getAllAlarm();
-		//		aa.changeCursor(c);
+		if (cal.before(today)){
+			cal.add(Calendar.DATE, 7);
+		}
 
 		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
@@ -290,7 +276,7 @@ public class MainActivity extends FragmentActivity {
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
 				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-
+		
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
 	}
@@ -363,10 +349,6 @@ public class MainActivity extends FragmentActivity {
 				pendingIntent);
 	}
 
-	public static void deleteAlarm(int id) {
-		nds.deleteAlarm(id);
-	}
-
 	public static void loadTimer() {
 
 		df = new TimePickerFragment();
@@ -399,4 +381,6 @@ public class MainActivity extends FragmentActivity {
 		c = nds.getAllAlarm();
 		aa.changeCursor(c);
 	}
+	
+	
 }
