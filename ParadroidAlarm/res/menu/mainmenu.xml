@@ -5,11 +5,11 @@
         android:icon="@drawable/add_alarm"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="Refresh"/>
+        android:title="@string/add_alarm_title"/>
     <item
         android:id="@+id/action_settings"
         android:showAsAction="always"
-        android:title="Settings">
+        android:title="@string/menu">
     </item>
 
 </menu>

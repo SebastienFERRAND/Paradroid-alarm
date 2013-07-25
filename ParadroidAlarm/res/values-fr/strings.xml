@@ -8,8 +8,10 @@
     <string name="snoozeafter">Repousser fera sonner dans :</string>
     <string name="add_alarm">+</string>
     <string name="stop">Dites "stop" ou "snooze"</string>
+    <string name="add_alarm_title">Ajouter une alarme</string>
+    <string name="back">Retour</string>
       
-    <string name="contact">contacter le developpeur</string>
+    <string name="contact">Faire un retour</string>
     
     
     <string name="day1">Lundi</string>

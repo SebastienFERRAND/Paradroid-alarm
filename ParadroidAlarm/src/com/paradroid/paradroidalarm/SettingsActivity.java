@@ -1,5 +1,10 @@
 package com.paradroid.paradroidalarm;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.paradroid.paradroidalarm.R;
 import com.paradroid.helper.ParamHelper;
 
@@ -14,7 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
-public class SettingsActivity extends Activity{
+public class SettingsActivity extends SherlockFragmentActivity{
 	
 //	private ToggleButton tb;
 	private EditText snoozeMinutes;
@@ -25,6 +30,10 @@ public class SettingsActivity extends Activity{
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.settings);
+		
+		ActionBar ab = getSupportActionBar(); 
+		ab.setDisplayShowTitleEnabled(false); 
+		ab.setDisplayShowHomeEnabled(false);
 		
 		contactButton = (Button) this.findViewById(R.id.buttonContact);
 		
@@ -72,7 +81,29 @@ public class SettingsActivity extends Activity{
 			}
 		});*/
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.settingsmenu, menu);
+		return true;
+	} 
 
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		// do stuff with CalendarContract
+		case R.id.action_back:
+			finish();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	/*public void onToggleClicked(View view) {
 		
 		// Is the toggle on?

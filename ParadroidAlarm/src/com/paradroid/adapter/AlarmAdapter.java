@@ -92,6 +92,36 @@ public class AlarmAdapter extends CursorAdapter {
 
 		ToggleButton onOffButton = (ToggleButton) v.findViewById(R.id.togglebuttononoff);
 		onOffButton.setChecked(onOffb);
+		
+		onOffButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				int id = (Integer) v.getTag();
+
+				Cursor cur = MainActivity.nds.getAlarm(id);
+				
+				if (cur.getCount() !=0){
+
+					cur.moveToFirst();
+					int hourP = (int) cur.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
+					int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
+					int onOff = (int) cur.getDouble(DataBaseHelper.DATABASE_ON_OFF_INT);
+
+					if (onOff == 0){
+						MainActivity.nds.modifyCheck(id, 1);
+						MainActivity.refresh();
+//						MainActivity.on(id, minuteP, hourP, cur.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+					}else{
+						MainActivity.nds.modifyCheck(id, 0);
+						MainActivity.refresh();
+//						MainActivity.off(id);
+					}
+				}
+			}
+		});
+
+			
 
 		TextView hour_text = (TextView) v.findViewById(R.id.time);
 		String zeroHour ="";
@@ -161,32 +191,6 @@ public class AlarmAdapter extends CursorAdapter {
 			}
 		});
 
-		onOffButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-				int id = (Integer) buttonView.getTag();
-
-				Cursor cur = MainActivity.nds.getAlarm(id);
-				if (cur.getCount() !=0){
-
-					cur.moveToFirst();
-					int hourP = (int) cur.getDouble(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
-					int minuteP = (int) cur.getDouble(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
-
-					if (isChecked){
-						MainActivity.nds.modifyCheck(id, 1);
-//						MainActivity.on(id, minuteP, hourP, cur.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
-					}else{
-						MainActivity.nds.modifyCheck(id, 0);
-//						MainActivity.off(id);
-					}
-				}
-
-			}
-		});
-
 
 		Button deleteAlarm = (Button) v.findViewById(R.id.deleteAlarm);
 		deleteAlarm.setOnClickListener(new OnClickListener() {
@@ -217,6 +221,8 @@ public class AlarmAdapter extends CursorAdapter {
 //	}
 	
 	private void deleteCell(final View v, final int index, final int id) {
+		final int initialHeight = v.getMeasuredHeight();
+		Log.v("REBOOT", "Index " + index );
 		AnimationListener al = new AnimationListener() {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
@@ -237,7 +243,7 @@ public class AlarmAdapter extends CursorAdapter {
 			@Override
 			protected void applyTransformation(float interpolatedTime, Transformation t) {
 				if (interpolatedTime == 1) {
-					v.setVisibility(View.GONE);
+					v.getLayoutParams().height = initialHeight;
 				}
 				else {
 					v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);

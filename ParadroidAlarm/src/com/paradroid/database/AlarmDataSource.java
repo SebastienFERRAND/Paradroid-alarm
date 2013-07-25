@@ -13,6 +13,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 public class AlarmDataSource {
 
@@ -128,7 +129,7 @@ public class AlarmDataSource {
 		ContentValues args = new ContentValues();
 		args.put(DataBaseHelper.DATABASE_ON_OFF_ALARM, i);
 		database.update(DataBaseHelper.DATABASE_TABLE_ALARM, args, DataBaseHelper.DATABASE_ID_ALARM + "=" + id, null);
-		
+		Log.v("DAYS", "GOES HERE WITH THE VALUE : " + i);
 	}
 
 }

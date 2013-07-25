@@ -10,6 +10,7 @@ import com.paradroid.helper.ParamHelper;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -31,6 +32,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class AlarmReceiverActivity extends Activity {
 	private MediaPlayer mMediaPlayer; 
@@ -59,6 +61,8 @@ public class AlarmReceiverActivity extends Activity {
 	private WakeLock wakeLock;
 
 	private int numberOfLoop = 0;
+	
+	private boolean failRecongnition = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +99,7 @@ public class AlarmReceiverActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				stopSound();
 				stopALarmbool = true;
+				Log.v("BEG", "GOES INSIDE HEYA 5");
 				finish();
 				return false;
 			}
@@ -106,6 +111,7 @@ public class AlarmReceiverActivity extends Activity {
 		int onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
 
 		if (onOffp == 0){
+			Log.v("BEG", "GOES INSIDE HEYA 6");
 			this.finish();
 		}
 
@@ -126,8 +132,18 @@ public class AlarmReceiverActivity extends Activity {
 			if(!stopALarmbool){
 				stopSound();
 				playBip();
-				startVoiceRecognitionActivity();
-				handlerSound.postDelayed(startSound, 5000);//Message will be delivered in 5 second.
+
+				try{
+					startVoiceRecognitionActivity();
+					handlerSound.postDelayed(startSound, 5000);//Message will be delivered in 5 second.
+				}catch(ActivityNotFoundException e){
+					Toast.makeText(con, 
+							"The voice recongnition is not available on this phone", 
+							Toast.LENGTH_SHORT).show();
+
+					Log.v("BEG", "GOES HERE LALALAL: ");
+					failRecongnition = true;
+				}
 			}
 		}
 
@@ -289,6 +305,7 @@ public class AlarmReceiverActivity extends Activity {
 		if (numberOfLoop > 10){
 			stopSound();
 			stopALarmbool = true;
+			Log.v("BEG", "GOES INSIDE HEYA 7");
 			finish();
 		}
 
@@ -358,6 +375,7 @@ public class AlarmReceiverActivity extends Activity {
 				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
 		startActivityForResult(intent, REQUEST_CODE);
+
 	}
 
 	/**
@@ -366,20 +384,33 @@ public class AlarmReceiverActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
 		{
+			
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			ArrayList<String> matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
 			Log.v("Test", matches.get(0));
-			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top") || matches.get(0).contains("sup")){
+			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top") || matches.get(0).contains("sup")|| matches.get(0).contains("stuff")){
+				Log.v("BEG", "GOES INSIDE HEYA 1");
 				finish();
 			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")|| matches.get(0).contains("snooze")|| matches.get(0).contains("this")){
 				// snooze but don't use same id
 				MainActivity.snooze(id, minute, hour);
+				Log.v("BEG", "GOES INSIDE HEYA 2");
+				finish();
+			}else{
+				Log.v("BEG", "GOES INSIDE HEYA 3");
 				finish();
 			}
 		}
+
+		if ((resultCode == RESULT_CANCELED) && (!failRecongnition)){
+			Log.v("BEG", "GOES INSIDE HEYA 4");
+			finish();
+		}
+
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 

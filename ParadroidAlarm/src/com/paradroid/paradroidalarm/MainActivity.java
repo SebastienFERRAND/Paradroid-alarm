@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -46,9 +47,9 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//		ActionBar ab = getActionBar(); 
-		//		ab.setDisplayShowTitleEnabled(false); 
-		//		ab.setDisplayShowHomeEnabled(false);
+		ActionBar ab = getSupportActionBar(); 
+		ab.setDisplayShowTitleEnabled(false); 
+		ab.setDisplayShowHomeEnabled(false);
 
 		ParamHelper.initParamHelper(this);
 
@@ -72,8 +73,6 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 		});*/
 
-		registerForContextMenu(listAlarms);
-
 	}
 
 	@Override
@@ -91,40 +90,9 @@ public class MainActivity extends SherlockFragmentActivity {
 		inflater.inflate(R.menu.delete_or_update_time_menu, menu);
 	}*/
 
-
-
-
-	@Override
-	public boolean onContextItemSelected(android.view.MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		if(item.getTitle().equals("Edit Alarm")) {
-
-			return true;
-		}else if(item.getTitle().equals("Delete Alarm")){
-
-			nds.deleteAlarm((int) info.id);
-
-			refresh();
-
-			Intent intent = new Intent(ma, AlarmReceiverActivity.class);
-			PendingIntent pendingIntent = PendingIntent.getActivity(ma,
-					(int) info.id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-			AlarmManager am = 
-					(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
-			am.cancel(pendingIntent);
-
-			return true;
-
-		}else{
-			return super.onContextItemSelected(item);
-		}
-
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
 		switch (item.getItemId()) {
 		// do stuff with CalendarContract
 		case R.id.action_settings:
@@ -381,6 +349,4 @@ public class MainActivity extends SherlockFragmentActivity {
 		c = nds.getAllAlarm();
 		aa.changeCursor(c);
 	}
-	
-	
 }
