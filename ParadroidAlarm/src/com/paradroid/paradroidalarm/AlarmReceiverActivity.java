@@ -99,7 +99,6 @@ public class AlarmReceiverActivity extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				stopSound();
 				stopALarmbool = true;
-				Log.v("BEG", "GOES INSIDE HEYA 5");
 				finish();
 				return false;
 			}
@@ -111,7 +110,6 @@ public class AlarmReceiverActivity extends Activity {
 		int onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
 
 		if (onOffp == 0){
-			Log.v("BEG", "GOES INSIDE HEYA 6");
 			this.finish();
 		}
 
@@ -384,6 +382,9 @@ public class AlarmReceiverActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		Log.v("RECON", "requestCode : " + requestCode);
+		Log.v("RECON", "resultCode : " + resultCode);
+		Log.v("RECON", "data : " + data);
 
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
 		{
@@ -393,23 +394,19 @@ public class AlarmReceiverActivity extends Activity {
 					RecognizerIntent.EXTRA_RESULTS);
 			Log.v("Test", matches.get(0));
 			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top") || matches.get(0).contains("sup")|| matches.get(0).contains("stuff")){
-				Log.v("BEG", "GOES INSIDE HEYA 1");
 				finish();
 			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")|| matches.get(0).contains("snooze")|| matches.get(0).contains("this")){
 				// snooze but don't use same id
 				MainActivity.snooze(id, minute, hour);
-				Log.v("BEG", "GOES INSIDE HEYA 2");
 				finish();
 			}else{
-				Log.v("BEG", "GOES INSIDE HEYA 3");
 				finish();
 			}
 		}
 
-		if ((resultCode == RESULT_CANCELED) && (!failRecongnition)){
-			Log.v("BEG", "GOES INSIDE HEYA 4");
+		/*if ((resultCode == RESULT_CANCELED) && (!failRecongnition) && (data!=null)){
 			finish();
-		}
+		}*/
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}
