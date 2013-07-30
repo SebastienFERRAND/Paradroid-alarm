@@ -10,6 +10,9 @@
     <string name="stop">Say "stop" or "snooze"</string>
     <string name="add_alarm_title">Add alarm</string>
     <string name="back">Back</string>
+    <string name="activate_voice">Enable Voice recongnition</string>
+    <string name="ok">ok</string>
+    
     
     
     <string name="contact">send feedback</string>

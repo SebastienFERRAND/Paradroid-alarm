@@ -61,8 +61,10 @@ public class AlarmReceiverActivity extends Activity {
 	private WakeLock wakeLock;
 
 	private int numberOfLoop = 0;
-	
+
 	private boolean failRecongnition = false;
+	
+	private boolean timeOut;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -107,18 +109,25 @@ public class AlarmReceiverActivity extends Activity {
 		ndsA = new AlarmDataSource(con);
 		Cursor c = ndsA.getAlarm(id);
 		c.moveToFirst();
-		int onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
+		onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
+		Log.v("ID", onOffp + "");
 
-		if (onOffp == 0){
-			this.finish();
-		}
+		if (onOffp == 1){
 
-		if(ParamHelper.getTalk()){
-			playSoundTalk(con);
+
+			if(ParamHelper.getTalk()){
+				playSoundTalk(con);
+			}else{
+				playSoundMusic(con, getAlarmUri());
+			}
+
+			if (ParamHelper.getEnableVoice()){
+				handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second
+			}
 		}else{
-			playSoundMusic(con, getAlarmUri());
+			this.finish();
+
 		}
-		handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second
 	}
 
 	//Here's a runnable/handler combo
@@ -128,6 +137,7 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
+				timeOut = false;
 				stopSound();
 				playBip();
 
@@ -138,8 +148,6 @@ public class AlarmReceiverActivity extends Activity {
 					Toast.makeText(con, 
 							"The voice recongnition is not available on this phone", 
 							Toast.LENGTH_SHORT).show();
-
-					Log.v("BEG", "GOES HERE LALALAL: ");
 					failRecongnition = true;
 				}
 			}
@@ -184,8 +192,10 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
+				timeOut = true;
 				finishActivity(REQUEST_CODE);
-
+				
+				
 				if(ParamHelper.getTalk()){
 					playSoundTalk(con);
 				}else{
@@ -303,7 +313,6 @@ public class AlarmReceiverActivity extends Activity {
 		if (numberOfLoop > 10){
 			stopSound();
 			stopALarmbool = true;
-			Log.v("BEG", "GOES INSIDE HEYA 7");
 			finish();
 		}
 
@@ -368,11 +377,19 @@ public class AlarmReceiverActivity extends Activity {
 	 */
 	private void startVoiceRecognitionActivity()
 	{
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		/*Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
-		startActivityForResult(intent, REQUEST_CODE);
+		startActivityForResult(intent, REQUEST_CODE);*/
+		
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+	    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+	            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+	    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+	    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the magic word");
+	    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
+	    startActivityForResult(intent, REQUEST_CODE);
 
 	}
 
@@ -382,13 +399,14 @@ public class AlarmReceiverActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		Log.v("RECON", "requestCode : " + requestCode);
-		Log.v("RECON", "resultCode : " + resultCode);
+//		Log.v("RECON", "requestCode : " + requestCode);
+//		Log.v("RECON", "resultCode : " + resultCode);
+//		Log.v("RECON", "timeOut : " + timeOut);
 		Log.v("RECON", "data : " + data);
 
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
 		{
-			
+
 			// Populate the wordsList with the String values the recognition engine thought it heard
 			ArrayList<String> matches = data.getStringArrayListExtra(
 					RecognizerIntent.EXTRA_RESULTS);
@@ -413,15 +431,19 @@ public class AlarmReceiverActivity extends Activity {
 
 	@Override
 	public void onDestroy(){
+		Log.v("ID", onOffp + " 2");
+		if (onOffp == 1){
+			stopSound();
+		}else{
+
+		}
 		stopALarmbool = true;
-		stopSound();
-		//		MainActivity.deleteAlarm(id);
-		Cursor c = MainActivity.nds.getAlarm(id);
+		Cursor c = ndsA.getAlarm(id);
 		c.moveToFirst();
-		MainActivity.on(id, hour, minute, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+		MainActivity.on(con, id, hour, minute, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 		MainActivity.refresh();
 		wakeLock.release();
-
+		
 		super.onDestroy();
 	}
 }	

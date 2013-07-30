@@ -7,10 +7,14 @@ import com.paradroid.paradroidalarm.R;
 import com.paradroid.database.DataBaseHelper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 
 
@@ -24,6 +28,8 @@ public class PickADayActivity extends Activity {
 	private CheckBox friday;
 	private CheckBox saturday;
 	private CheckBox sunday;
+	private Button ok;
+	private Context cont;
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -36,6 +42,10 @@ public class PickADayActivity extends Activity {
 		friday = (CheckBox) findViewById(R.id.day5);
 		saturday = (CheckBox) findViewById(R.id.day6);
 		sunday = (CheckBox) findViewById(R.id.day7);
+		
+		ok = (Button) findViewById(R.id.ok_pick_day);
+		
+		cont = this;
 
 		Intent intent = getIntent();
 		id = intent.getIntExtra("idNote", 0);
@@ -61,6 +71,15 @@ public class PickADayActivity extends Activity {
 		if (days.contains(7)){
 			saturday.setChecked(true);
 		}
+		
+		ok.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				((PickADayActivity) cont).finish();
+				
+			}
+		});
 
 		//Change on destroy
 		
@@ -98,7 +117,7 @@ public class PickADayActivity extends Activity {
 		MainActivity.off(id);
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();
-		MainActivity.on(id, c.getInt(DataBaseHelper.DATABASE_MINUTE_ALARM_INT), c.getInt(DataBaseHelper.DATABASE_HOUR_ALARM_INT), days);
+		MainActivity.on(cont, id, c.getInt(DataBaseHelper.DATABASE_MINUTE_ALARM_INT), c.getInt(DataBaseHelper.DATABASE_HOUR_ALARM_INT), days);
 		MainActivity.refresh();
 		
 		super.onDestroy();

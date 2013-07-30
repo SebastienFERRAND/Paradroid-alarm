@@ -20,6 +20,11 @@ public class ParamHelper {
 	public static void pushTalk(boolean value){
 		editor.putBoolean("talkBool", value);
 		editor.commit();
+	}
+	
+	public static void pushEnableVoice(boolean value){
+		editor.putBoolean("enableVoice", value);
+		editor.commit();
 	} 
 
 	public static boolean getTalk(){
@@ -28,17 +33,24 @@ public class ParamHelper {
 		return talk;
 	}
 
-	public static void pushSnooze(float value){
+	public static void pushSnooze(int value){
 
 		initParamHelper(con);
-		editor.putFloat("snooze", value);
+		editor.putInt("snooze", value);
 		editor.commit();
 	}
 
-	public static float getSnooze(){
+	public static int getSnooze(){
 
 		initParamHelper(con);
-		float value = settings.getFloat("snooze", 5);
+		int value = settings.getInt("snooze", 5);
+		return value;
+	}
+	
+	public static boolean getEnableVoice(){
+
+		initParamHelper(con);
+		boolean value = settings.getBoolean("enableVoice", true);
 		return value;
 	}
 

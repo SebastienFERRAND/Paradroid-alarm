@@ -13,10 +13,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends SherlockFragmentActivity{
@@ -34,6 +38,24 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		ActionBar ab = getSupportActionBar(); 
 		ab.setDisplayShowTitleEnabled(false); 
 		ab.setDisplayShowHomeEnabled(false);
+		
+		snoozeMinutes = (EditText) findViewById(R.id.pick_time_snooze);
+		int minute = (int) ParamHelper.getSnooze();
+		snoozeMinutes.setText(minute+"");
+		
+		ToggleButton enableVoiceButton = (ToggleButton) findViewById(R.id.togglebuttonenablevoice);
+		enableVoiceButton.setChecked(ParamHelper.getEnableVoice());
+		
+		enableVoiceButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked){
+					ParamHelper.pushEnableVoice(true);
+				}else{
+					ParamHelper.pushEnableVoice(false);
+				}
+			}
+		});
 		
 		contactButton = (Button) this.findViewById(R.id.buttonContact);
 		
@@ -54,32 +76,6 @@ public class SettingsActivity extends SherlockFragmentActivity{
 				
 			}
 		});
-		
-		
-//		tb = (ToggleButton) findViewById(R.id.togglebuttontalk);
-//		tb.setChecked(ParamHelper.getTalk());
-		/*snoozeMinutes = (EditText) findViewById(R.id.pick_time_snooze);
-		
-		snoozeMinutes.setText(ParamHelper.getSnooze()+"");
-		
-		snoozeMinutes.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-					int arg3) {
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable ed) {
-				
-			}
-		});*/
 	}
 	
 	@Override
@@ -117,11 +113,12 @@ public class SettingsActivity extends SherlockFragmentActivity{
 
 	@Override
 	public void onDestroy(){
-		/*try{
-			
+		try{
+			Log.v("RECON", snoozeMinutes.getText().toString());
+			ParamHelper.pushSnooze(Integer.parseInt(snoozeMinutes.getText().toString()));
 		}catch(Exception e){
-			ParamHelper.pushSnooze(Float.parseFloat(snoozeMinutes.toString()));
-		}*/
+			
+		}
 		super.onDestroy();
 	}
 }

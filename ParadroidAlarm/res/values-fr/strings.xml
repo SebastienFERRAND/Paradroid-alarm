@@ -10,6 +10,8 @@
     <string name="stop">Dites "stop" ou "snooze"</string>
     <string name="add_alarm_title">Ajouter une alarme</string>
     <string name="back">Retour</string>
+    <string name="activate_voice">Activer la reconnaissance vocale</string>
+    <string name="ok">ok</string>
       
     <string name="contact">Contacter l\'auteur</string>
     

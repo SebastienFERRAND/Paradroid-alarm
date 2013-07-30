@@ -20,11 +20,13 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TimePicker;
@@ -141,11 +143,16 @@ public class MainActivity extends SherlockFragmentActivity {
 			if (fromModify){
 				days = MainActivity.nds.getDays(idTime);
 				MainActivity.nds.modifyTime(idTime, hourOfDay, minute);
-				MainActivity.on(idTime, minute, hourOfDay, MainActivity.arrayListToInt(days));
+				MainActivity.on(ma, idTime, minute, hourOfDay, MainActivity.arrayListToInt(days));
 				refresh();
 				fromModify = false;
 			}else{
 				int id = createAlarm(hourOfDay, minute, days);
+
+				Intent viewIntent = new Intent(ma, PickADayActivity.class);
+				viewIntent.putExtra("idNote", (Integer) id);
+				((MainActivity) ma).startActivityForResult(viewIntent, 1);
+				
 			}
 
 		}
@@ -159,7 +166,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		refresh();
 		Cursor c = MainActivity.nds.getAlarm(id);
 		c.moveToFirst();
-		MainActivity.on(id, minute, hourOfDay, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+		MainActivity.on(ma, id, minute, hourOfDay, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 		return id;
 	}
 
@@ -211,7 +218,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		refresh();
 	}
 	
-	public static void on(int id, int minute, int hourOfDay, int days) {
+	public static void on(Context cont, int id, int minute, int hourOfDay, int days) {
 
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
@@ -233,17 +240,17 @@ public class MainActivity extends SherlockFragmentActivity {
 			cal.add(Calendar.DATE, 7);
 		}
 
-		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		Intent intent = new Intent(cont, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.putExtra("days", days);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+		PendingIntent pendingIntent = PendingIntent.getActivity(cont,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
-				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+				(AlarmManager)cont.getSystemService(Activity.ALARM_SERVICE);
 		
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
@@ -252,6 +259,10 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static int getNextRing(Calendar cal, ArrayList<Integer> listDays) {
 		int day = cal.get(Calendar.DAY_OF_WEEK);
 		Calendar today = Calendar.getInstance();
+		if (listDays.size() == 0){
+			return 0;
+		}
+		
 		for (int i = 0; i < listDays.size(); i++){
 			//			Log.v("DAYS", "List days " + MainActivity.fromIntToDay(listDays.get(i)));
 		}
@@ -346,7 +357,17 @@ public class MainActivity extends SherlockFragmentActivity {
 	}
 
 	public static void refresh() {
-		c = nds.getAllAlarm();
-		aa.changeCursor(c);
+		try{
+			c = nds.getAllAlarm();
+			aa.changeCursor(c);
+		}catch(Exception e){
+			
+		}
 	}
+	
+	/*@Override
+	public void onDestroy(){
+		MainActivity.nds.close();
+		super.onDestroy();
+	}*/
 }

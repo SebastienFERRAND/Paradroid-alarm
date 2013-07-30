@@ -198,7 +198,11 @@ public class AlarmAdapter extends CursorAdapter {
 			@Override
 			public void onClick(View v) {
 				RowInfo rid = (RowInfo) v.getTag();
-				deleteCell(rid.v, rid.indexInfo, rid.idInfo);
+				
+
+				MainActivity.nds.deleteAlarm(rid.idInfo);
+				MainActivity.refresh();
+//				deleteCell(rid.v, rid.indexInfo, rid.idInfo);
 				MainActivity.offAndOut(rid.idInfo);
 			}
 		});
