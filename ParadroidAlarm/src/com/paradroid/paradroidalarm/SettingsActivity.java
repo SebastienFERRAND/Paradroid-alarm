@@ -5,11 +5,13 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.appflood.AppFlood;
 import com.paradroid.paradroidalarm.R;
 import com.paradroid.helper.ParamHelper;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,28 +26,29 @@ import android.widget.ListView;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends SherlockFragmentActivity{
-	
-//	private ToggleButton tb;
+
+	//	private ToggleButton tb;
 	private EditText snoozeMinutes;
 	private Button contactButton;
-	
-	
+	private Button rateButton;
+
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.settings);
-		
+
 		ActionBar ab = getSupportActionBar(); 
 		ab.setDisplayShowTitleEnabled(false); 
 		ab.setDisplayShowHomeEnabled(false);
-		
+
 		snoozeMinutes = (EditText) findViewById(R.id.pick_time_snooze);
 		int minute = (int) ParamHelper.getSnooze();
 		snoozeMinutes.setText(minute+"");
-		
+
 		ToggleButton enableVoiceButton = (ToggleButton) findViewById(R.id.togglebuttonenablevoice);
 		enableVoiceButton.setChecked(ParamHelper.getEnableVoice());
-		
+
 		enableVoiceButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -56,11 +59,11 @@ public class SettingsActivity extends SherlockFragmentActivity{
 				}
 			}
 		});
-		
+
 		contactButton = (Button) this.findViewById(R.id.buttonContact);
-		
+
 		contactButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(Intent.ACTION_SEND);
@@ -69,15 +72,25 @@ public class SettingsActivity extends SherlockFragmentActivity{
 				i.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
 				i.putExtra(Intent.EXTRA_TEXT   , "Dear developper,");
 				try {
-				    startActivity(Intent.createChooser(i, "Send mail..."));
+					startActivity(Intent.createChooser(i, "Send mail..."));
 				} catch (android.content.ActivityNotFoundException ex) {
-					
+
 				}
-				
+
+			}
+		});
+
+		rateButton = (Button) this.findViewById(R.id.buttonRate);
+		rateButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				openWebURL("https://play.google.com/store/apps/details?id=com.paradroid.paradroidalarm");
+
 			}
 		});
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
@@ -85,7 +98,7 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		return true;
 	} 
 
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -101,7 +114,7 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		return super.onOptionsItemSelected(item);
 	}
 	/*public void onToggleClicked(View view) {
-		
+
 		// Is the toggle on?
 		boolean on = ((ToggleButton) view).isChecked();
 		if (on) {
@@ -117,8 +130,14 @@ public class SettingsActivity extends SherlockFragmentActivity{
 			Log.v("RECON", snoozeMinutes.getText().toString());
 			ParamHelper.pushSnooze(Integer.parseInt(snoozeMinutes.getText().toString()));
 		}catch(Exception e){
-			
+
 		}
 		super.onDestroy();
+	}
+
+	public void openWebURL( String inURL ) {
+		Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( inURL ) );
+
+		startActivity( browse );
 	}
 }

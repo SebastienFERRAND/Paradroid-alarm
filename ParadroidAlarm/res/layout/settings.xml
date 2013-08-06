@@ -60,23 +60,48 @@
             android:text="@string/snoozeafter"
             android:textColor="#000000"
             android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/pick_time_snooze"
+        
+        <TextView
+            android:id="@+id/minute_text"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:inputType="number"
-            android:layout_marginRight="2dp" />
+            android:text="@string/minutes"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+        
+        <EditText
+            android:id="@+id/pick_time_snooze"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@id/minute_text"
+            android:gravity="center"
+            android:inputType="number" />
+        
+        
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonContact"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/contact"
-        android:textColor="#000000" />
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/buttonRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/rate"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/buttonContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contact"
+            android:textColor="#000000" />
+    </LinearLayout>
 
 </RelativeLayout>

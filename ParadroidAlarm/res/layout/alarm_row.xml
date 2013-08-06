@@ -26,8 +26,9 @@
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="60dp"
-            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="#000000"
             android:textSize="24sp"
@@ -37,8 +38,9 @@
 
         <TextView
             android:id="@+id/days"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="#000000"
             android:textSize="17sp"

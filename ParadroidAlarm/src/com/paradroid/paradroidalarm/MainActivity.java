@@ -3,6 +3,7 @@ package com.paradroid.paradroidalarm;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -27,9 +28,18 @@ import android.database.Cursor;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.appflood.AppFlood;
+import com.appflood.AppFlood.AFEventDelegate;
+import com.appflood.AppFlood.AFRequestDelegate;
 
 public class MainActivity extends SherlockFragmentActivity {
 
@@ -44,10 +54,14 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static boolean fromModify = false;
 	public static int idTime;
 
+	private TextView txti;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		AppFlood.initialize(this, "1hHVHQBuMVjzx6wY", "jDIj7PZ81499L51fdf416", AppFlood.AD_ALL);
 
 		ActionBar ab = getSupportActionBar(); 
 		ab.setDisplayShowTitleEnabled(false); 
@@ -61,7 +75,39 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		c = nds.getAllAlarm();
 		aa = new AlarmAdapter(this, c);
-		
+
+		txti = (TextView) findViewById(R.id.instructions_text);
+
+		txti.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				
+				int randomValue = 2 + (int)(Math.random() * ((6 - 2) + 1));
+				Log.v("BEG", "COUCOU TU VEUX VOIR MA BITE : " + randomValue);
+				
+				switch(randomValue){
+				case 2:
+					txti.setText(R.string.instructions1);
+					break;
+				case 3:
+					txti.setText(R.string.instructions2);
+					break;
+				case 4:
+					txti.setText(R.string.instructions3);
+					break;
+				case 5:
+					txti.setText(R.string.instructions4);
+					break;
+				case 6:
+					txti.setText(R.string.instructions5);
+					break;
+				}
+			}
+		});
+
+		ParamHelper.pushTimeOpen(ParamHelper.getTimeOpen() + 1);
+
 		listAlarms = (ListView) findViewById(R.id.listAlarm);
 		listAlarms.setAdapter(aa);
 
@@ -82,7 +128,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.mainmenu, menu);
 		return true;
-	} 
+	}
 
 	/*@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -152,7 +198,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				Intent viewIntent = new Intent(ma, PickADayActivity.class);
 				viewIntent.putExtra("idNote", (Integer) id);
 				((MainActivity) ma).startActivityForResult(viewIntent, 1);
-				
+
 			}
 
 		}
@@ -217,7 +263,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		refresh();
 	}
-	
+
 	public static void on(Context cont, int id, int minute, int hourOfDay, int days) {
 
 		//Create an offset from the current time in which the alarm will go off.
@@ -251,7 +297,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
 				(AlarmManager)cont.getSystemService(Activity.ALARM_SERVICE);
-		
+
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
 	}
@@ -262,7 +308,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (listDays.size() == 0){
 			return 0;
 		}
-		
+
 		for (int i = 0; i < listDays.size(); i++){
 			//			Log.v("DAYS", "List days " + MainActivity.fromIntToDay(listDays.get(i)));
 		}
@@ -304,7 +350,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		return arrayDays;
 	}
 
-	public static void snooze(int id, int minute, int hourOfDay) {
+	public static void snooze(Context cont, int id, int minute, int hourOfDay) {
 
 		//Create an offset from the current time in which the alarm will go off.
 		Calendar cal = Calendar.getInstance();
@@ -313,16 +359,16 @@ public class MainActivity extends SherlockFragmentActivity {
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
 
-		Intent intent = new Intent(ma, AlarmReceiverActivity.class);
+		Intent intent = new Intent(cont, AlarmReceiverActivity.class);
 		intent.putExtra("id", id);
 		intent.putExtra("minute", minute);
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(ma,
+		PendingIntent pendingIntent = PendingIntent.getActivity(cont,
 				(int) System.currentTimeMillis(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager am = 
-				(AlarmManager)ma.getSystemService(Activity.ALARM_SERVICE);
+				(AlarmManager)cont.getSystemService(Activity.ALARM_SERVICE);
 
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
@@ -361,13 +407,13 @@ public class MainActivity extends SherlockFragmentActivity {
 			c = nds.getAllAlarm();
 			aa.changeCursor(c);
 		}catch(Exception e){
-			
+
 		}
 	}
-	
-	/*@Override
+
+	@Override
 	public void onDestroy(){
-		MainActivity.nds.close();
+		//		AppFlood.showFullScreen(this);
 		super.onDestroy();
-	}*/
+	}
 }

@@ -27,17 +27,31 @@ public class ParamHelper {
 		editor.commit();
 	} 
 
-	public static boolean getTalk(){
-		initParamHelper(con);
-		boolean talk = settings.getBoolean("talkBool", false);
-		return talk;
-	}
-
 	public static void pushSnooze(int value){
 
 		initParamHelper(con);
 		editor.putInt("snooze", value);
 		editor.commit();
+	}
+	
+	public static void pushIntensity(int value){
+
+		initParamHelper(con);
+		editor.putInt("intensity", value);
+		editor.commit();
+	}
+	
+	public static void pushTimeOpen(int value){
+
+		initParamHelper(con);
+		editor.putInt("time_open", value);
+		editor.commit();
+	}
+
+	public static boolean getTalk(){
+		initParamHelper(con);
+		boolean talk = settings.getBoolean("talkBool", false);
+		return talk;
 	}
 
 	public static int getSnooze(){
@@ -51,6 +65,20 @@ public class ParamHelper {
 
 		initParamHelper(con);
 		boolean value = settings.getBoolean("enableVoice", true);
+		return value;
+	}
+	
+	public static int getIntensity(){
+
+		initParamHelper(con);
+		int value = settings.getInt("intensity", 0);
+		return value;
+	}
+	
+	public static int getTimeOpen(){
+
+		initParamHelper(con);
+		int value = settings.getInt("time_open", 0);
 		return value;
 	}
 

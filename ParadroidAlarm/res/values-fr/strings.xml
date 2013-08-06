@@ -7,13 +7,16 @@
     <string name="menu">Reglages</string>
     <string name="snoozeafter">Repousser fera sonner dans :</string>
     <string name="add_alarm">+</string>
-    <string name="stop">Dites "stop" ou "snooze"</string>
+    <string name="stop">Touchez l\'ecran pour arreter l\'alarme ou faites un son entre 2 sonneries pour la repousser</string>
     <string name="add_alarm_title">Ajouter une alarme</string>
     <string name="back">Retour</string>
     <string name="activate_voice">Activer la reconnaissance vocale</string>
     <string name="ok">ok</string>
+    <string name="minutes">minutes</string>
+    <string name="instructions1">Bienvenue sur Paradroid Alarm ! Commencons par un peu d\'explications.</string>
       
     <string name="contact">Contacter l\'auteur</string>
+    <string name="rate">Noter cette application</string>
     
     
     <string name="day1">Lundi</string>

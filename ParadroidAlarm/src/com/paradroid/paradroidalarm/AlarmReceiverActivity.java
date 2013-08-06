@@ -7,6 +7,7 @@ import com.paradroid.paradroidalarm.R;
 import com.paradroid.database.AlarmDataSource;
 import com.paradroid.database.DataBaseHelper;
 import com.paradroid.helper.ParamHelper;
+import com.paradroid.helper.SoundHelper;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
@@ -18,13 +19,16 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaRecorder;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +37,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.util.Log;
 
 public class AlarmReceiverActivity extends Activity {
 	private MediaPlayer mMediaPlayer; 
@@ -62,15 +67,17 @@ public class AlarmReceiverActivity extends Activity {
 
 	private int numberOfLoop = 0;
 
-	private boolean failRecongnition = false;
-	
-	private boolean timeOut;
+	private boolean continueRing = true;
+
+	private SoundHelper sm;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		ParamHelper.initParamHelper(this);
+
+		sm = new SoundHelper();  
 
 		Intent intent = getIntent();
 
@@ -87,6 +94,10 @@ public class AlarmReceiverActivity extends Activity {
 		hour = intent.getIntExtra("hourOfDay", 0);
 		int days = intent.getIntExtra("days", 0);
 
+//		Log.v("ID", "days " + days);
+//		Log.v("ID", "hour " + hour);
+//		Log.v("ID", "minute " + minute);
+
 		listDays = MainActivity.intToArray(days);
 		con = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -99,6 +110,7 @@ public class AlarmReceiverActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				sm.stop();
 				stopSound();
 				stopALarmbool = true;
 				finish();
@@ -113,8 +125,6 @@ public class AlarmReceiverActivity extends Activity {
 		Log.v("ID", onOffp + "");
 
 		if (onOffp == 1){
-
-
 			if(ParamHelper.getTalk()){
 				playSoundTalk(con);
 			}else{
@@ -126,7 +136,6 @@ public class AlarmReceiverActivity extends Activity {
 			}
 		}else{
 			this.finish();
-
 		}
 	}
 
@@ -137,18 +146,17 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
-				timeOut = false;
 				stopSound();
-				playBip();
+//				playBip();
 
 				try{
-					startVoiceRecognitionActivity();
+					sm.start();
+					sm.getAmplitude();
 					handlerSound.postDelayed(startSound, 5000);//Message will be delivered in 5 second.
 				}catch(ActivityNotFoundException e){
 					Toast.makeText(con, 
 							"The voice recongnition is not available on this phone", 
 							Toast.LENGTH_SHORT).show();
-					failRecongnition = true;
 				}
 			}
 		}
@@ -192,10 +200,22 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
-				timeOut = true;
-				finishActivity(REQUEST_CODE);
-				
-				
+//				con = this;
+
+				//				finishActivity(REQUEST_CODE);
+				//				sr.stopListening();
+				double amp = sm.getAmplitude();
+				sm.stop();
+				Log.v("REBOOT", "max amp " + amp);
+
+				if (amp > 2500){
+					MainActivity.snooze(con, id, minute, hour);
+					stopSound();
+					stopALarmbool = true;
+					finish();
+				}
+
+
 				if(ParamHelper.getTalk()){
 					playSoundTalk(con);
 				}else{
@@ -236,7 +256,6 @@ public class AlarmReceiverActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		//SON 3
 		AssetFileDescriptor afd3 = con.getResources().openRawResourceFd(R.raw.talky);
 		try {
@@ -372,66 +391,9 @@ public class AlarmReceiverActivity extends Activity {
 		return alert;
 	}
 
-	/**
-	 * Fire an intent to start the voice recognition activity.
-	 */
-	private void startVoiceRecognitionActivity()
-	{
-		/*Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Voice recognition Demo...");
-		startActivityForResult(intent, REQUEST_CODE);*/
-		
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-	    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-	            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-	    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-	    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say the magic word");
-	    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
-	    startActivityForResult(intent, REQUEST_CODE);
-
-	}
-
-	/**
-	 * Handle the results from the voice recognition activity.
-	 */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-//		Log.v("RECON", "requestCode : " + requestCode);
-//		Log.v("RECON", "resultCode : " + resultCode);
-//		Log.v("RECON", "timeOut : " + timeOut);
-		Log.v("RECON", "data : " + data);
-
-		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
-		{
-
-			// Populate the wordsList with the String values the recognition engine thought it heard
-			ArrayList<String> matches = data.getStringArrayListExtra(
-					RecognizerIntent.EXTRA_RESULTS);
-			Log.v("Test", matches.get(0));
-			if (matches.get(0).contains("stop") || matches.get(0).contains("f***") || matches.get(0).contains("top") || matches.get(0).contains("sup")|| matches.get(0).contains("stuff")){
-				finish();
-			}else if(matches.get(0).contains("later") || matches.get(0).contains("matter") || matches.get(0).contains("caster")|| matches.get(0).contains("snooze")|| matches.get(0).contains("this")){
-				// snooze but don't use same id
-				MainActivity.snooze(id, minute, hour);
-				finish();
-			}else{
-				finish();
-			}
-		}
-
-		/*if ((resultCode == RESULT_CANCELED) && (!failRecongnition) && (data!=null)){
-			finish();
-		}*/
-
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 
 	@Override
 	public void onDestroy(){
-		Log.v("ID", onOffp + " 2");
 		if (onOffp == 1){
 			stopSound();
 		}else{
@@ -443,7 +405,8 @@ public class AlarmReceiverActivity extends Activity {
 		MainActivity.on(con, id, hour, minute, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 		MainActivity.refresh();
 		wakeLock.release();
-		
+
 		super.onDestroy();
 	}
+
 }	
