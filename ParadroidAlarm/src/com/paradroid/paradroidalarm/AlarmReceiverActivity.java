@@ -36,6 +36,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -99,7 +100,7 @@ public class AlarmReceiverActivity extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.alarm);
 
-		Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
+		LinearLayout stopAlarm = (LinearLayout) findViewById(R.id.linear_instruction);
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 		stopAlarm.setOnTouchListener(new OnTouchListener() {

@@ -140,6 +140,10 @@ public class MainActivity extends SherlockFragmentActivity {
 					break;
 				case 5:
 					txti.setText(R.string.instructions5);
+					txti.setTag(6);
+					break;
+				case 6:
+					txti.setText(R.string.instructions6);
 					txti.setTag(1);
 					break;
 				}

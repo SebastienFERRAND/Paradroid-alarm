@@ -19,6 +19,7 @@
     <string name="instructions3">Pour acceder aux reglages appuyez sur \"Reglage\"</string>
     <string name="instructions4">Vous pouvez repousser l\'alarme de quelques minutes en utilisant votre voix entre 2 sonneries</string>
     <string name="instructions5">Vous pouvez arreter l\'alarme en appuyant sur l\'ecran</string>  
+    <string name="instructions6">Si vous voulez contacter mon createur a propos d\'un probleme ou d\'une idee, allez dans \"Reglage\", \"Contacter l\'auteur\", et faites vous plaisir !</string>
     
     <string name="contact">Contacter l\'auteur</string>
     <string name="rate">Noter cette application</string>

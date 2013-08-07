@@ -35,9 +35,10 @@
 
         <ToggleButton
             android:id="@+id/togglebuttonenablevoice"
-            android:layout_width="78dp"
+            android:layout_width="60dp"
             android:layout_height="28dp"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
             android:background="@drawable/toggle_me"
             android:textColor="#FFFFFF"
             android:textOff="Off"
@@ -67,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
             android:gravity="center"
             android:text="@string/minutes"
             android:textColor="#000000"
@@ -92,15 +94,19 @@
             android:id="@+id/buttonRate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:background="@drawable/rounded_edges_in"
             android:text="@string/rate"
-            android:textColor="#000000" />
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/buttonContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:background="@drawable/rounded_edges_in"
             android:text="@string/contact"
-            android:textColor="#000000" />
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </RelativeLayout>

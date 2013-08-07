@@ -19,12 +19,11 @@
     <string name="instructions3">To access the settings tap on \"Settings\" on the top right corner (really?)</string>
     <string name="instructions4">You can snooze the alarm by saying something in between two ringing</string>
     <string name="instructions5">You can stop the alarm by taping the screen</string>
-    <string name="instructions6">If to give my developper feedback about issues or ideas, go under \"Settings\", \"Send feedback\", and please yourself !</string>
     
     
     
-    <string name="contact">Send feedback</string>
-    <string name="rate">Rate this app</string>
+    <string name="contact">send feedback</string>
+    <string name="rate">rate this app</string>
     
     <string name="day1">Monday</string>
     <string name="day2">Tuesday</string>
