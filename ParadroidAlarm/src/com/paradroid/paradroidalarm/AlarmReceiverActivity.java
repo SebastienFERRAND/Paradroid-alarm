@@ -93,11 +93,7 @@ public class AlarmReceiverActivity extends Activity {
 		minute = intent.getIntExtra("minute", 0);
 		hour = intent.getIntExtra("hourOfDay", 0);
 		int days = intent.getIntExtra("days", 0);
-
-//		Log.v("ID", "days " + days);
-//		Log.v("ID", "hour " + hour);
-//		Log.v("ID", "minute " + minute);
-
+		
 		listDays = MainActivity.intToArray(days);
 		con = this;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);

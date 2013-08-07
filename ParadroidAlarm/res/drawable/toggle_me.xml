@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/on_w_new" android:state_checked="true"/>
+    <item android:drawable="@drawable/on_tog" android:state_checked="true"/>
     <!-- pressed -->
-    <item android:drawable="@drawable/off_w_new" android:state_checked="false"/>
+    <item android:drawable="@drawable/off_tog" android:state_checked="false"/>
     <!-- default/unchecked -->
 
 </selector>

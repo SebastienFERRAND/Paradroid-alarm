@@ -16,7 +16,7 @@
     
     <string name="instructions1">Welcome to paradroid alarm ! Let\'s get started.</string>
     <string name="instructions2">To add an alarm tap the icon in the top right corner (the little alarm)</string>
-    <string name="instructions3">To access the settings tap on "Settings" (really?)</string>
+    <string name="instructions3">To access the settings tap on \"Settings\" on the top right corner (really?)</string>
     <string name="instructions4">You can snooze the alarm by saying something in between two ringing</string>
     <string name="instructions5">You can stop the alarm by taping the screen</string>
     

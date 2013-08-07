@@ -31,6 +31,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -55,14 +57,16 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static int idTime;
 
 	private TextView txti;
+	private ImageView alarm_face;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		AppFlood.initialize(this, "1hHVHQBuMVjzx6wY", "jDIj7PZ81499L51fdf416", AppFlood.AD_ALL);
-
+//		AppFlood.initialize(this, "1hHVHQBuMVjzx6wY", "jDIj7PZ81499L51fdf416", AppFlood.AD_ALL);
+//		AppFlood.destroy();
+		
 		ActionBar ab = getSupportActionBar(); 
 		ab.setDisplayShowTitleEnabled(false); 
 		ab.setDisplayShowHomeEnabled(false);
@@ -76,31 +80,67 @@ public class MainActivity extends SherlockFragmentActivity {
 		c = nds.getAllAlarm();
 		aa = new AlarmAdapter(this, c);
 
-		txti = (TextView) findViewById(R.id.instructions_text);
+		alarm_face = (ImageView) findViewById(R.id.alarm_face);
+		alarm_face.setTag(R.drawable.talking_alarm);
+		alarm_face.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				
+				int idIm = (Integer) v.getTag();
+				
+				switch(idIm){
+				case R.drawable.talking_alarm:
+					alarm_face.setImageResource(R.drawable.happy_alarm);
+					alarm_face.setTag(R.drawable.happy_alarm);
+					break;
+				case R.drawable.happy_alarm:
+					alarm_face.setImageResource(R.drawable.average_alarm);
+					alarm_face.setTag(R.drawable.average_alarm);
+					txti.setText("Hey !");
+					break;
+				case R.drawable.average_alarm:
+					alarm_face.setImageResource(R.drawable.unhappy_alarm);
+					alarm_face.setTag(R.drawable.unhappy_alarm);
+					txti.setText("Ouch !");
+					break;
+				case R.drawable.unhappy_alarm:
+					alarm_face.setVisibility(View.GONE);
+					txti.setVisibility(View.GONE);
+					break;
+				}
+			}
+		});
+
+		txti = (TextView) findViewById(R.id.instructions_text);
+		txti.setTag(1);
 		txti.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View v) {
+
+				int idIm = (Integer) v.getTag();
 				
-				int randomValue = 2 + (int)(Math.random() * ((6 - 2) + 1));
-				Log.v("BEG", "COUCOU TU VEUX VOIR MA BITE : " + randomValue);
-				
-				switch(randomValue){
-				case 2:
+				switch(idIm){
+				case 1:
 					txti.setText(R.string.instructions1);
+					txti.setTag(2);
+					break;
+				case 2:
+					txti.setText(R.string.instructions2);
+					txti.setTag(3);
 					break;
 				case 3:
-					txti.setText(R.string.instructions2);
+					txti.setText(R.string.instructions3);
+					txti.setTag(4);
 					break;
 				case 4:
-					txti.setText(R.string.instructions3);
+					txti.setText(R.string.instructions4);
+					txti.setTag(5);
 					break;
 				case 5:
-					txti.setText(R.string.instructions4);
-					break;
-				case 6:
 					txti.setText(R.string.instructions5);
+					txti.setTag(1);
 					break;
 				}
 			}

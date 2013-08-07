@@ -912,24 +912,31 @@ containing a value of this type.
         public static final int abs__toast_frame=0x7f02006f;
         public static final int add_alarm=0x7f020070;
         public static final int alarm_background=0x7f020071;
-        public static final int delete=0x7f020072;
-        public static final int delete_background=0x7f020073;
-        public static final int delete_button=0x7f020074;
-        public static final int delete_pressed=0x7f020075;
-        public static final int deleteicon=0x7f020076;
-        public static final int ic_launcher=0x7f020077;
-        public static final int ic_launcher4=0x7f020078;
-        public static final int off_w_new=0x7f020079;
-        public static final int ok_background=0x7f02007a;
-        public static final int on_w_new=0x7f02007b;
-        public static final int rounded_edges=0x7f02007c;
-        public static final int rounded_edges_alarm_pressed=0x7f02007d;
-        public static final int rounded_edges_alarm_unpressed=0x7f02007e;
-        public static final int rounded_edges_in=0x7f02007f;
-        public static final int rounded_edges_lv=0x7f020080;
-        public static final int selected_state=0x7f020081;
-        public static final int toggle_me=0x7f020082;
-        public static final int unselected_state=0x7f020083;
+        public static final int average_alarm=0x7f020072;
+        public static final int delete=0x7f020073;
+        public static final int delete_background=0x7f020074;
+        public static final int delete_button=0x7f020075;
+        public static final int delete_pressed=0x7f020076;
+        public static final int deleteicon=0x7f020077;
+        public static final int happy_alarm=0x7f020078;
+        public static final int ic_launcher=0x7f020079;
+        public static final int ic_launcher4=0x7f02007a;
+        public static final int ic_launcher5=0x7f02007b;
+        public static final int off_tog=0x7f02007c;
+        public static final int off_w_new=0x7f02007d;
+        public static final int ok_background=0x7f02007e;
+        public static final int on_tog=0x7f02007f;
+        public static final int on_w_new=0x7f020080;
+        public static final int rounded_edges=0x7f020081;
+        public static final int rounded_edges_alarm_pressed=0x7f020082;
+        public static final int rounded_edges_alarm_unpressed=0x7f020083;
+        public static final int rounded_edges_in=0x7f020084;
+        public static final int rounded_edges_lv=0x7f020085;
+        public static final int selected_state=0x7f020086;
+        public static final int talking_alarm=0x7f020087;
+        public static final int toggle_me=0x7f020088;
+        public static final int unhappy_alarm=0x7f020089;
+        public static final int unselected_state=0x7f02008a;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f050020;
@@ -971,47 +978,48 @@ containing a value of this type.
         public static final int abs__textButton=0x7f050013;
         public static final int abs__title=0x7f05001b;
         public static final int abs__up=0x7f05000b;
-        public static final int action_back=0x7f050050;
-        public static final int action_settings=0x7f05004e;
-        public static final int add_alarm=0x7f05004f;
-        public static final int buttonContact=0x7f05004c;
-        public static final int buttonRate=0x7f05004b;
-        public static final int day1=0x7f05003c;
-        public static final int day2=0x7f05003d;
-        public static final int day3=0x7f05003e;
-        public static final int day4=0x7f05003f;
-        public static final int day5=0x7f050040;
-        public static final int day6=0x7f050041;
-        public static final int day7=0x7f050042;
-        public static final int days=0x7f05003b;
-        public static final int deleteAlarm=0x7f050039;
+        public static final int action_back=0x7f050051;
+        public static final int action_settings=0x7f05004f;
+        public static final int add_alarm=0x7f050050;
+        public static final int alarm_face=0x7f050035;
+        public static final int buttonContact=0x7f05004d;
+        public static final int buttonRate=0x7f05004c;
+        public static final int day1=0x7f05003d;
+        public static final int day2=0x7f05003e;
+        public static final int day3=0x7f05003f;
+        public static final int day4=0x7f050040;
+        public static final int day5=0x7f050041;
+        public static final int day6=0x7f050042;
+        public static final int day7=0x7f050043;
+        public static final int days=0x7f05003c;
+        public static final int deleteAlarm=0x7f05003a;
         public static final int disableHome=0x7f050009;
-        public static final int editNote=0x7f05004d;
+        public static final int editNote=0x7f05004e;
         public static final int edit_query=0x7f050026;
         public static final int homeAsUp=0x7f050006;
-        public static final int instructions_text=0x7f050035;
-        public static final int layout_alarm=0x7f050037;
+        public static final int instructions_text=0x7f050036;
+        public static final int layout_alarm=0x7f050038;
         public static final int linearLList=0x7f050032;
         public static final int linear_instruction=0x7f050034;
         public static final int listAlarm=0x7f050033;
         public static final int listMode=0x7f050002;
-        public static final int minute_text=0x7f050049;
+        public static final int minute_text=0x7f05004a;
         public static final int normal=0x7f050001;
-        public static final int ok_pick_day=0x7f050043;
-        public static final int pick_time_snooze=0x7f05004a;
+        public static final int ok_pick_day=0x7f050044;
+        public static final int pick_time_snooze=0x7f05004b;
         public static final int showCustom=0x7f050008;
         public static final int showHome=0x7f050005;
         public static final int showTitle=0x7f050007;
-        public static final int stopAlarm=0x7f050036;
+        public static final int stopAlarm=0x7f050037;
         public static final int tabMode=0x7f050003;
-        public static final int time=0x7f05003a;
-        public static final int time_snooze=0x7f050048;
-        public static final int togglebuttonenablevoice=0x7f050047;
-        public static final int togglebuttononoff=0x7f050038;
-        public static final int txtmenu=0x7f050044;
-        public static final int txttalk=0x7f050046;
+        public static final int time=0x7f05003b;
+        public static final int time_snooze=0x7f050049;
+        public static final int togglebuttonenablevoice=0x7f050048;
+        public static final int togglebuttononoff=0x7f050039;
+        public static final int txtmenu=0x7f050045;
+        public static final int txttalk=0x7f050047;
         public static final int useLogo=0x7f050004;
-        public static final int voicereconlayout=0x7f050045;
+        public static final int voicereconlayout=0x7f050046;
         public static final int wrap_content=0x7f050000;
     }
     public static final class integer {
@@ -1132,6 +1140,9 @@ containing a value of this type.
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
 
+
+
+
     
 
         Base application theme for API 11+. This theme completely replaces
@@ -1152,11 +1163,16 @@ containing a value of this type.
             backward-compatibility can go here.
 
 
+
+
+
     
  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f0b005a;
+        public static final int MyActionBar=0x7f0b005d;
+        public static final int MyTheme=0x7f0b005c;
         public static final int Sherlock___TextAppearance_Small=0x7f0b0046;
         public static final int Sherlock___Theme=0x7f0b0051;
         public static final int Sherlock___Theme_DarkActionBar=0x7f0b0053;

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#D1D5D8" >
+    android:background="#FFFFFF" >
 
     <TextView
         android:id="@+id/txtmenu"
@@ -39,8 +39,9 @@
             android:layout_height="28dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/toggle_me"
-            android:textOff=""
-            android:textOn="" />
+            android:textColor="#FFFFFF"
+            android:textOff="Off"
+            android:textOn="On" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -60,7 +61,7 @@
             android:text="@string/snoozeafter"
             android:textColor="#000000"
             android:textSize="15sp" />
-        
+
         <TextView
             android:id="@+id/minute_text"
             android:layout_width="wrap_content"
@@ -70,7 +71,7 @@
             android:text="@string/minutes"
             android:textColor="#000000"
             android:textSize="15sp" />
-        
+
         <EditText
             android:id="@+id/pick_time_snooze"
             android:layout_width="wrap_content"
@@ -79,8 +80,6 @@
             android:layout_toLeftOf="@id/minute_text"
             android:gravity="center"
             android:inputType="number" />
-        
-        
     </RelativeLayout>
 
     <LinearLayout
