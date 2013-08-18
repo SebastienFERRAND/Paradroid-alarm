@@ -28,7 +28,7 @@
         <item name="android:actionMenuTextColor">#FFFFFF</item>
     </style>
 
-    <style name="MyActionBar" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <style name="MyActionBar" parent="Widget.Sherlock.ActionBar">
         <item name="android:background">#89C2F6</item>
     </style>
 

@@ -4,11 +4,11 @@
         android:id="@+id/add_alarm"
         android:icon="@drawable/add_alarm"
         android:orderInCategory="100"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/add_alarm_title"/>
     <item
         android:id="@+id/action_settings"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/menu" >
     </item>
 

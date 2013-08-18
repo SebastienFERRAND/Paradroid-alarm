@@ -2,35 +2,32 @@
 <resources>
 
     <string name="app_name">Alarm Paradroid</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu">Settings</string>
-    <string name="snoozeafter">Snooze will ring after :</string>
+    <string name="action_settings">ติดตั้ง</string>
+    <string name="hello_world">สวัสดีชาวโลก!</string>
+    <string name="menu">ติดตั้ง</string>
+    <string name="snoozeafter">ปลุกครั้งต่อไป :</string>
     <string name="add_alarm">+</string>
-    <string name="stop">Tap the screen to stop or say something in between two ringing to snooze</string>
-    <string name="add_alarm_title">Add alarm</string>
-    <string name="back">Back</string>
-    <string name="activate_voice">Enable Voice recongnition</string>
-    <string name="ok">ok</string>
-    <string name="minutes">minutes</string>
-    
-    <string name="instructions1">Welcome to paradroid alarm ! Let\'s get started.</string>
-    <string name="instructions2">To add an alarm tap the icon in the top right corner (the little alarm)</string>
-    <string name="instructions3">To access the settings tap on \"Settings\" on the top right corner (really?)</string>
-    <string name="instructions4">You can snooze the alarm by saying something in between two ringing</string>
-    <string name="instructions5">You can stop the alarm by taping the screen</string>
-    
-    
-    
-    <string name="contact">send feedback</string>
-    <string name="rate">rate this app</string>
-    
-    <string name="day1">Monday</string>
-    <string name="day2">Tuesday</string>
-    <string name="day3">Wednesday</string>
-    <string name="day4">Thursday</string>
-    <string name="day5">Friday</string>
-    <string name="day6">Saturday</string>
-    <string name="day7">Sunday</string>
+    <string name="stop">แตะที่หน้าจอเพื่อหยุดนาฬิกาปลุกหรือพูดอะไรก็ได้ระหว่างเสียงปลุกเพืื่อหยุดชั่วคราว </string>
+    <string name="speak_now">พูดเพื่อหยุดชั่วคราว !</string>
+    <string name="add_alarm_title">ตั้งนาฬืกาปลุก</string>
+    <string name="back">กลับ</string>
+    <string name="activate_voice">ระบบสั่งการด้วยเสียง</string>
+    <string name="ok">ตกลง</string>
+    <string name="minutes">นาที</string>
+    <string name="instructions1">ยินดีต้อนรับสู่ paradroid alarm ! เริ่มกันเลย</string>
+    <string name="instructions2">แตะที่ไอค่อนรูปนาฬิกาปลุกที่อยู่มุมบนขวาเพื่อเพื่มนาฬิกาปลุก</string>
+    <string name="instructions3">เข้าสู่เมนูติดตั้งให้แตะที่ \"ติดตั้ง\" ด้านมุมบนขวา</string>
+    <string name="instructions4">การหยุดขั่วคราวให้พูดอะไรก็ได้ระหว่างเสียงปลุก นาฬิกาจะทำการปลุกใหม่ตรั้งถัดไปตามจำนวนนาทีที่ตั้งไว้ในหน้าติดตั้ง</string>
+    <string name="instructions5">การจะหยุดนาฬิกาปลุกต้องแตะที่หน้าจอ</string>
+    <string name="instructions6">หากท่านมีข้อเสนอแนะหรือติชมใดๆ สามารถส่งฟีดแบคกลับมาหาเราได้ โดยไปที่ \"ติดตั้ง\", \"ส่งฟีดแบค\", ทางเราหวังเป็นอย่างยิ่งที่จะได้รับฟีดแบคจากท่าน !</string>
+    <string name="contact">ส่งฟีดแบค</string>
+    <string name="rate">ให้คะแนนเแอพนี้</string>
+    <string name="day1">วันจันทร์</string>
+    <string name="day2">วันอังคาร</string>
+    <string name="day3">วันพุธ</string>
+    <string name="day4">วันพฤหัสบดี</string>
+    <string name="day5">วันศุกร์</string>
+    <string name="day6">วันเสาร์</string>
+    <string name="day7">วันอาทิตย์</string>
 
 </resources>

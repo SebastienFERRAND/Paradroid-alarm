@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.appflood.AppFlood;
 import com.appflood.AppFlood.AFEventDelegate;
@@ -58,6 +59,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private TextView txti;
 	private ImageView alarm_face;
+	
+	private static boolean fired;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +206,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 	public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener,
 	TimePickerDialog.OnDismissListener{
 
@@ -225,6 +228,14 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			// Do something with the time chosen by the user
+			
+			if (fired == true) {
+	            Log.i("PEW PEW", "Double fire occured. Silently-ish returning");
+	            return;
+	        } else {
+	            //first time fired
+	            fired = true;
+	        }
 			int dayOfWeek = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
 			ArrayList<Integer> days = new ArrayList<Integer>();
 			days.add(dayOfWeek);
@@ -237,6 +248,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				refresh();
 				fromModify = false;
 			}else{
+				Log.v("Test", "gonna create alarm");
 				int id = createAlarm(hourOfDay, minute, days);
 
 				Intent viewIntent = new Intent(ma, PickADayActivity.class);
@@ -416,12 +428,16 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				pendingIntent);
+		
+//		Toast.makeText(cont.getApplicationContext(), cont.getResources().getString(R.string.snoozed), Toast.LENGTH_LONG).show();
 	}
 
 	public static void loadTimer() {
 
+		fired = false;
 		df = new TimePickerFragment();
 		df.show(ma.getSupportFragmentManager(), "timePicker");
+		
 
 	}
 

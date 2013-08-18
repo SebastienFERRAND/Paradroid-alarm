@@ -45,6 +45,8 @@ public class AlarmDataSource {
 
 	public int createAlarm(int hour, int minute, int day, int snooze) {
 
+		Log.v("Test", "Alarm created");
+		
 		sqlLtSt = database.compileStatement("INSERT INTO " + DataBaseHelper.DATABASE_TABLE_ALARM 
 				+ " VALUES(NULL, ?, ?, ?, '', ?, ?)");
 		sqlLtSt.bindLong(1, hour);

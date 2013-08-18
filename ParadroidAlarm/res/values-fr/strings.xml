@@ -8,6 +8,7 @@
     <string name="snoozeafter">Repousser fera sonner dans :</string>
     <string name="add_alarm">+</string>
     <string name="stop">Touchez l\'ecran pour arreter l\'alarme ou faites un son entre 2 sonneries pour la repousser</string>
+    <string name="speak_now">Parlez maintenant pour la stopper !</string>
     <string name="add_alarm_title">Ajouter une alarme</string>
     <string name="back">Retour</string>
     <string name="activate_voice">Activer la reconnaissance vocale</string>

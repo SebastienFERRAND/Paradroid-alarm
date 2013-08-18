@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Alarm Paradroid</string>
+    <string name="action_settings">设置</string>
+    <string name="hello_world">你好世界!</string>
+    <string name="menu">设置</string>
+    <string name="snoozeafter">下一次闹钟响 :</string>
+    <string name="add_alarm">+</string>
+    <string name="stop">Tap the screen to stop or say something in between two ringing to snooze</string>
+    <string name="speak_now">说话马上暂停 !</string>
+    <string name="add_alarm_title">添加闹钟</string>
+    <string name="back">返回</string>
+    <string name="activate_voice">激活使用声音停止闹钟</string>
+    <string name="ok">确认</string>
+    <string name="minutes">分钟</string>
+    <string name="instructions1">欢迎到 paradroid alarm !请开始</string>
+    <string name="instructions2">To add an alarm tap the icon in the top right corner (the little alarm)</string>
+    <string name="instructions3">To access the settings tap on \"Settings\" on the top right corner (really?)</string>
+    <string name="instructions4">You can snooze the alarm by saying something in between two ringing</string>
+    <string name="instructions5">You can stop the alarm by taping the screen</string>
+    <string name="instructions6">If to give my developper feedback about issues or ideas, go under \"Settings\", \"Send feedback\", and please yourself !</string>
+    <string name="contact">Send feedback</string>
+    <string name="rate">Rate this app</string>
+    <string name="day1">周一</string>
+    <string name="day2">周二</string>
+    <string name="day3">周三</string>
+    <string name="day4">周四</string>
+    <string name="day5">周五</string>
+    <string name="day6">周六</string>
+    <string name="day7">周日</string>
+
+</resources>

@@ -37,6 +37,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -71,11 +72,15 @@ public class AlarmReceiverActivity extends Activity {
 	private boolean continueRing = true;
 
 	private SoundHelper sm;
+	
+	private TextView alarmTextRing;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		ParamHelper.initParamHelper(this);
 
 		sm = new SoundHelper();  
@@ -96,9 +101,10 @@ public class AlarmReceiverActivity extends Activity {
 		int days = intent.getIntExtra("days", 0);
 		
 		listDays = MainActivity.intToArray(days);
-		con = this;
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setContentView(R.layout.alarm);
+		alarmTextRing = (TextView) findViewById(R.id.alarm_text_ring);
+		con = this;
 
 		LinearLayout stopAlarm = (LinearLayout) findViewById(R.id.linear_instruction);
 		audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
@@ -107,6 +113,7 @@ public class AlarmReceiverActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+//				Toast.makeText(con.getApplicationContext(), con.getResources().getString(R.string.stopped), Toast.LENGTH_LONG).show();
 				sm.stop();
 				stopSound();
 				stopALarmbool = true;
@@ -147,6 +154,11 @@ public class AlarmReceiverActivity extends Activity {
 //				playBip();
 
 				try{
+
+					Log.v("Test", con + "");
+					Log.v("Test", alarmTextRing + "");
+
+					alarmTextRing.setText(con.getResources().getString(R.string.speak_now));
 					sm.start();
 					sm.getAmplitude();
 					handlerSound.postDelayed(startSound, 5000);//Message will be delivered in 5 second.
@@ -197,13 +209,12 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
-//				con = this;
+				alarmTextRing.setText(con.getResources().getString(R.string.stop));
 
 				//				finishActivity(REQUEST_CODE);
 				//				sr.stopListening();
 				double amp = sm.getAmplitude();
 				sm.stop();
-				Log.v("REBOOT", "max amp " + amp);
 
 				if (amp > 2500){
 					MainActivity.snooze(con, id, minute, hour);
@@ -324,9 +335,9 @@ public class AlarmReceiverActivity extends Activity {
 	}
 
 	private void playSoundMusic(Context context, Uri alert) {
-
 		numberOfLoop++;
 		if (numberOfLoop > 10){
+			MainActivity.snooze(con, id, minute, hour);
 			stopSound();
 			stopALarmbool = true;
 			finish();
