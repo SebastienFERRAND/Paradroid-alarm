@@ -47,6 +47,20 @@ public class ParamHelper {
 		editor.putInt("time_open", value);
 		editor.commit();
 	}
+	
+	public static void pushURISong(String value){
+
+		initParamHelper(con);
+		editor.putString("URISong", value);
+		editor.commit();
+	}
+	
+	public static void pushIntervalSongVoice(int seconds){
+
+		initParamHelper(con);
+		editor.putInt("IntervalSongVoice", seconds);
+		editor.commit();
+	}
 
 	public static boolean getTalk(){
 		initParamHelper(con);
@@ -71,7 +85,7 @@ public class ParamHelper {
 	public static int getIntensity(){
 
 		initParamHelper(con);
-		int value = settings.getInt("intensity", 0);
+		int value = settings.getInt("intensity", 2500);
 		return value;
 	}
 	
@@ -79,6 +93,21 @@ public class ParamHelper {
 
 		initParamHelper(con);
 		int value = settings.getInt("time_open", 0);
+		return value;
+	}
+
+	public static String getURISong(){
+
+		initParamHelper(con);
+		String value = settings.getString("URISong", "");
+		return value;
+	}
+	
+	
+	public static int getIntervalSongVoice(){
+
+		initParamHelper(con);
+		int value = settings.getInt("IntervalSongVoice", 20);
 		return value;
 	}
 

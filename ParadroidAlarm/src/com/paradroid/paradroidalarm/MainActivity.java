@@ -248,15 +248,12 @@ public class MainActivity extends SherlockFragmentActivity {
 				refresh();
 				fromModify = false;
 			}else{
-				Log.v("Test", "gonna create alarm");
 				int id = createAlarm(hourOfDay, minute, days);
 
 				Intent viewIntent = new Intent(ma, PickADayActivity.class);
 				viewIntent.putExtra("idNote", (Integer) id);
 				((MainActivity) ma).startActivityForResult(viewIntent, 1);
-
 			}
-
 		}
 	}
 

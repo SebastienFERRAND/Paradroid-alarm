@@ -22,6 +22,11 @@
     <string name="instructions6">หากท่านมีข้อเสนอแนะหรือติชมใดๆ สามารถส่งฟีดแบคกลับมาหาเราได้ โดยไปที่ \"ติดตั้ง\", \"ส่งฟีดแบค\", ทางเราหวังเป็นอย่างยิ่งที่จะได้รับฟีดแบคจากท่าน !</string>
     <string name="contact">ส่งฟีดแบค</string>
     <string name="rate">ให้คะแนนเแอพนี้</string>
+    <string name="sensibility_text">ระดับเสียง :</string>
+    <string name="choose_ringtone">เลือกเสียงปลุก :</string>
+    <string name="browse">ค้นหา</string>
+    <string name="tap">กดแล้วพูด</string>
+    <string name="tap_again">กดอีกครั้ง</string>
     <string name="day1">วันจันทร์</string>
     <string name="day2">วันอังคาร</string>
     <string name="day3">วันพุธ</string>

@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Paradroid Alarm</string>
+    <string name="app_name">Paradroid Alarme</string>
     <string name="action_settings">Menu</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu">Reglages</string>
+    <string name="menu">Réglages</string>
     <string name="snoozeafter">Repousser fera sonner dans :</string>
     <string name="add_alarm">+</string>
-    <string name="stop">Touchez l\'ecran pour arreter l\'alarme ou faites un son entre 2 sonneries pour la repousser</string>
+    <string name="stop">Touchez l\'écran pour arrêter l\'alarme ou faites un son entre 2 sonneries pour la repousser</string>
     <string name="speak_now">Parlez maintenant pour la stopper !</string>
     <string name="add_alarm_title">Ajouter une alarme</string>
     <string name="back">Retour</string>
-    <string name="activate_voice">Activer la reconnaissance vocale</string>
+    <string name="activate_voice">Activer la reconnaissance vocale :</string>
     <string name="ok">ok</string>
     <string name="minutes">minutes</string>
-    
-    <string name="instructions1">Bienvenue sur Paradroid Alarm ! Commencons par un peu d\'explications.</string>
-    <string name="instructions2">Pour ajouter une alarme appuyez sur le bouton en haut a droite</string>
-    <string name="instructions3">Pour acceder aux reglages appuyez sur \"Reglage\"</string>
+    <string name="instructions1">Bienvenue sur Paradroid Alarme ! Commençons par un peu d\'explications.</string>
+    <string name="instructions2">Pour ajouter une alarme appuyez sur le bouton en haut à droite</string>
+    <string name="instructions3">Pour accéder aux réglages appuyez sur \"Réglage\"</string>
     <string name="instructions4">Vous pouvez repousser l\'alarme de quelques minutes en utilisant votre voix entre 2 sonneries</string>
-    <string name="instructions5">Vous pouvez arreter l\'alarme en appuyant sur l\'ecran</string>  
-    <string name="instructions6">Si vous voulez contacter mon createur a propos d\'un probleme ou d\'une idee, allez dans \"Reglage\", \"Contacter l\'auteur\", et faites vous plaisir !</string>
-    
+    <string name="instructions5">Vous pouvez arrêter l\'alarme en appuyant sur l\'écran</string>
+    <string name="instructions6">Si vous voulez contacter mon créateur à propos d\'un problème ou d\'une idée, allez dans \"Réglage\", \"Contacter l\'auteur\", et faites-vous plaisir !</string>
     <string name="contact">Contacter l\'auteur</string>
     <string name="rate">Noter cette application</string>
-    
-    
+    <string name="sensibility_text">Puissance voix :</string>
+    <string name="choose_ringtone">Choisissez une sonnerie :</string>
+    <string name="browse">Explorer</string>
+    <string name="tap">Touchez et parlez</string>
+    <string name="tap_again">Touchez encore</string>
     <string name="day1">Lundi</string>
     <string name="day2">Mardi</string>
     <string name="day3">Mercredi</string>
@@ -33,7 +34,5 @@
     <string name="day5">Vendredi</string>
     <string name="day6">Samedi</string>
     <string name="day7">Dimanche</string>
-    
-    
 
 </resources>

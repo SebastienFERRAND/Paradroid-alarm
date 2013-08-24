@@ -11,7 +11,7 @@
     <string name="speak_now">Speak now to snooze !</string>
     <string name="add_alarm_title">Add alarm</string>
     <string name="back">Back</string>
-    <string name="activate_voice">Enable Voice recongnition</string>
+    <string name="activate_voice">Enable Voice recongnition :</string>
     <string name="ok">ok</string>
     <string name="minutes">minutes</string>
     <string name="instructions1">Welcome to paradroid alarm ! Let\'s get started.</string>
@@ -21,7 +21,19 @@
     <string name="instructions5">You can stop the alarm by taping the screen</string>
     <string name="instructions6">If to give my developper feedback about issues or ideas, go under \"Settings\", \"Send feedback\", and please yourself !</string>
     <string name="contact">Send feedback</string>
-    <string name="try_voice_power">Push this button, speak and push it again to try out the power of your voice !</string>
+    <string name="sensibility_text">Voice power :</string>
+    <string name="choose_ringtone">Choose a ringtone :</string>
+    <string name="browse">Browse</string>
+    <string name="tap">Tap and speak</string>
+    <string name="tap_again">Tap again</string>
+    <string name="ringinglength">Ringing length</string>
+    <string name="seconds">seconds</string>
+    
+    
+    
+    
+    
+    
     
     
     <string name="rate">Rate this app</string>

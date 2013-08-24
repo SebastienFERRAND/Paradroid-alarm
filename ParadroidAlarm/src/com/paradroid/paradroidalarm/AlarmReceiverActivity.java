@@ -72,7 +72,7 @@ public class AlarmReceiverActivity extends Activity {
 	private boolean continueRing = true;
 
 	private SoundHelper sm;
-	
+
 	private TextView alarmTextRing;
 
 	@Override
@@ -80,7 +80,7 @@ public class AlarmReceiverActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		ParamHelper.initParamHelper(this);
 
 		sm = new SoundHelper();  
@@ -99,9 +99,9 @@ public class AlarmReceiverActivity extends Activity {
 		minute = intent.getIntExtra("minute", 0);
 		hour = intent.getIntExtra("hourOfDay", 0);
 		int days = intent.getIntExtra("days", 0);
-		
+
 		listDays = MainActivity.intToArray(days);
-		
+
 		setContentView(R.layout.alarm);
 		alarmTextRing = (TextView) findViewById(R.id.alarm_text_ring);
 		con = this;
@@ -113,7 +113,7 @@ public class AlarmReceiverActivity extends Activity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-//				Toast.makeText(con.getApplicationContext(), con.getResources().getString(R.string.stopped), Toast.LENGTH_LONG).show();
+				//				Toast.makeText(con.getApplicationContext(), con.getResources().getString(R.string.stopped), Toast.LENGTH_LONG).show();
 				sm.stop();
 				stopSound();
 				stopALarmbool = true;
@@ -126,21 +126,71 @@ public class AlarmReceiverActivity extends Activity {
 		Cursor c = ndsA.getAlarm(id);
 		c.moveToFirst();
 		onOffp = c.getInt(DataBaseHelper.DATABASE_ON_OFF_INT);
-		Log.v("ID", onOffp + "");
+
+		initializePlayer();
 
 		if (onOffp == 1){
 			if(ParamHelper.getTalk()){
-				playSoundTalk(con);
+				//				playSoundTalk(con);
 			}else{
 				playSoundMusic(con, getAlarmUri());
 			}
 
 			if (ParamHelper.getEnableVoice()){
-				handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 1 second
+				handlerRecon.postDelayed(startRecognition, ParamHelper.getIntervalSongVoice() * 1000);//Message will be delivered in 1 second
 			}
 		}else{
 			this.finish();
 		}
+	}
+
+	private void initializePlayer() {
+
+		mMediaPlayer = new MediaPlayer();
+
+		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+		audio.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+				AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+
+		try {
+
+			if(!ParamHelper.getURISong().equals("")){
+				Uri myUri = Uri.parse(ParamHelper.getURISong());
+				mMediaPlayer.setDataSource(con, myUri);
+			}else{
+				mMediaPlayer.setDataSource(con, getAlarmUri());
+			}
+		} catch (IOException e) {
+			System.out.println("OOPS");
+		}
+
+		try {
+			if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+				mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+				mMediaPlayer.prepare();
+			}
+		} 
+		catch (IllegalArgumentException e) {    } 
+		catch (IllegalStateException e) { } 
+		catch (IOException e) { } 
+
+
+		//		mMediaPlayer4 = new MediaPlayer();
+		//
+		//		//SON 1
+		//		AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.beep);
+		//		try {
+		//			mMediaPlayer4.reset();
+		//			mMediaPlayer4.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+		//		} catch (IllegalArgumentException e) {
+		//			e.printStackTrace();
+		//		} catch (IllegalStateException e) {
+		//			e.printStackTrace();
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
+
 	}
 
 	//Here's a runnable/handler combo
@@ -150,13 +200,12 @@ public class AlarmReceiverActivity extends Activity {
 		public void run()
 		{
 			if(!stopALarmbool){
-				stopSound();
-//				playBip();
+
+				mMediaPlayer.pause();
+				//				stopSound();
+				//				playBip();
 
 				try{
-
-					Log.v("Test", con + "");
-					Log.v("Test", alarmTextRing + "");
 
 					alarmTextRing.setText(con.getResources().getString(R.string.speak_now));
 					sm.start();
@@ -170,36 +219,21 @@ public class AlarmReceiverActivity extends Activity {
 			}
 		}
 
-		private void playBip() {
-
-			mMediaPlayer4 = new MediaPlayer();
-
-			//SON 1
-			AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.beep);
-			try {
-				mMediaPlayer4.reset();
-				mMediaPlayer4.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-					mMediaPlayer4.setAudioStreamType(AudioManager.STREAM_ALARM);
-					mMediaPlayer4.prepare();
-					mMediaPlayer4.start();
-				}
-
-			} 
-			catch (IllegalArgumentException e) {    } 
-			catch (IllegalStateException e) { } 
-			catch (IOException e) { } 
-
-		}
+		//		private void playBip() {
+		//
+		//			try {
+		//				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+		//					mMediaPlayer4.setAudioStreamType(AudioManager.STREAM_ALARM);
+		//					mMediaPlayer4.prepare();
+		//					mMediaPlayer4.start();
+		//				}
+		//
+		//			} 
+		//			catch (IllegalArgumentException e) {    } 
+		//			catch (IllegalStateException e) { } 
+		//			catch (IOException e) { } 
+		//
+		//		}
 	};
 
 	//Here's a runnable/handler combo
@@ -216,7 +250,7 @@ public class AlarmReceiverActivity extends Activity {
 				double amp = sm.getAmplitude();
 				sm.stop();
 
-				if (amp > 2500){
+				if (amp > ParamHelper.getIntensity()){
 					MainActivity.snooze(con, id, minute, hour);
 					stopSound();
 					stopALarmbool = true;
@@ -225,114 +259,114 @@ public class AlarmReceiverActivity extends Activity {
 
 
 				if(ParamHelper.getTalk()){
-					playSoundTalk(con);
+					//					playSoundTalk(con);
 				}else{
 					playSoundMusic(con, getAlarmUri());
 				}
-				handlerRecon.postDelayed(startRecognition, 5000);//Message will be delivered in 5 second.
+				handlerRecon.postDelayed(startRecognition, ParamHelper.getIntervalSongVoice() * 1000);//Message will be delivered in 5 second.
 			}
 		}
 	};
 
-	private void playSoundTalk(Context context) {
-		mMediaPlayer1 = new MediaPlayer();
-		mMediaPlayer2 = new MediaPlayer();
-		mMediaPlayer3 = new MediaPlayer();
-
-		//SON 1
-		AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.hour);
-		try {
-			mMediaPlayer1.reset();
-			mMediaPlayer1.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//SON 2
-		AssetFileDescriptor afd2 = con.getResources().openRawResourceFd(R.raw.minute);
-		try {
-			mMediaPlayer2.reset();
-			mMediaPlayer2.setDataSource(afd2.getFileDescriptor(), afd2.getStartOffset(), afd2.getDeclaredLength());
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		//SON 3
-		AssetFileDescriptor afd3 = con.getResources().openRawResourceFd(R.raw.talky);
-		try {
-			mMediaPlayer3.reset();
-			mMediaPlayer3.setDataSource(afd3.getFileDescriptor(), afd3.getStartOffset(), afd3.getDeclaredLength());
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-				mMediaPlayer1.setAudioStreamType(AudioManager.STREAM_ALARM);
-				mMediaPlayer1.prepare();
-				mMediaPlayer1.start();
-			}
-
-		} 
-		catch (IllegalArgumentException e) {    } 
-		catch (IllegalStateException e) { } 
-		catch (IOException e) { } 
-
-
-		mMediaPlayer1.setOnCompletionListener(new OnCompletionListener() {
-
-			@Override
-			public void onCompletion(MediaPlayer player) {
-				player.stop();
-
-				try {
-					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-						mMediaPlayer2.setAudioStreamType(AudioManager.STREAM_ALARM);
-						mMediaPlayer2.prepare();
-						mMediaPlayer2.start();
-					}
-
-				} 
-				catch (IllegalArgumentException e) {    } 
-				catch (IllegalStateException e) { } 
-				catch (IOException e) { } 
-			}
-
-		});
-
-		mMediaPlayer2.setOnCompletionListener(new OnCompletionListener() {
-
-			@Override
-			public void onCompletion(MediaPlayer player) {
-				player.stop();
-
-				try {
-					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-						mMediaPlayer3.setAudioStreamType(AudioManager.STREAM_ALARM);
-						mMediaPlayer3.prepare();
-						mMediaPlayer3.start();
-					}
-
-				} 
-				catch (IllegalArgumentException e) {    } 
-				catch (IllegalStateException e) { } 
-				catch (IOException e) { } 
-			}
-
-		});
-
-	}
+	//	private void playSoundTalk(Context context) {
+	//		mMediaPlayer1 = new MediaPlayer();
+	//		mMediaPlayer2 = new MediaPlayer();
+	//		mMediaPlayer3 = new MediaPlayer();
+	//
+	//		//SON 1
+	//		AssetFileDescriptor afd = con.getResources().openRawResourceFd(R.raw.hour);
+	//		try {
+	//			mMediaPlayer1.reset();
+	//			mMediaPlayer1.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getDeclaredLength());
+	//		} catch (IllegalArgumentException e) {
+	//			e.printStackTrace();
+	//		} catch (IllegalStateException e) {
+	//			e.printStackTrace();
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//
+	//		//SON 2
+	//		AssetFileDescriptor afd2 = con.getResources().openRawResourceFd(R.raw.minute);
+	//		try {
+	//			mMediaPlayer2.reset();
+	//			mMediaPlayer2.setDataSource(afd2.getFileDescriptor(), afd2.getStartOffset(), afd2.getDeclaredLength());
+	//		} catch (IllegalArgumentException e) {
+	//			e.printStackTrace();
+	//		} catch (IllegalStateException e) {
+	//			e.printStackTrace();
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//		//SON 3
+	//		AssetFileDescriptor afd3 = con.getResources().openRawResourceFd(R.raw.talky);
+	//		try {
+	//			mMediaPlayer3.reset();
+	//			mMediaPlayer3.setDataSource(afd3.getFileDescriptor(), afd3.getStartOffset(), afd3.getDeclaredLength());
+	//		} catch (IllegalArgumentException e) {
+	//			e.printStackTrace();
+	//		} catch (IllegalStateException e) {
+	//			e.printStackTrace();
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//
+	//		try {
+	//			if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+	//				mMediaPlayer1.setAudioStreamType(AudioManager.STREAM_ALARM);
+	//				mMediaPlayer1.prepare();
+	//				mMediaPlayer1.start();
+	//			}
+	//
+	//		} 
+	//		catch (IllegalArgumentException e) {    } 
+	//		catch (IllegalStateException e) { } 
+	//		catch (IOException e) { } 
+	//
+	//
+	//		mMediaPlayer1.setOnCompletionListener(new OnCompletionListener() {
+	//
+	//			@Override
+	//			public void onCompletion(MediaPlayer player) {
+	//				player.stop();
+	//
+	//				try {
+	//					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+	//						mMediaPlayer2.setAudioStreamType(AudioManager.STREAM_ALARM);
+	//						mMediaPlayer2.prepare();
+	//						mMediaPlayer2.start();
+	//					}
+	//
+	//				} 
+	//				catch (IllegalArgumentException e) {    } 
+	//				catch (IllegalStateException e) { } 
+	//				catch (IOException e) { } 
+	//			}
+	//
+	//		});
+	//
+	//		mMediaPlayer2.setOnCompletionListener(new OnCompletionListener() {
+	//
+	//			@Override
+	//			public void onCompletion(MediaPlayer player) {
+	//				player.stop();
+	//
+	//				try {
+	//					if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+	//						mMediaPlayer3.setAudioStreamType(AudioManager.STREAM_ALARM);
+	//						mMediaPlayer3.prepare();
+	//						mMediaPlayer3.start();
+	//					}
+	//
+	//				} 
+	//				catch (IllegalArgumentException e) {    } 
+	//				catch (IllegalStateException e) { } 
+	//				catch (IOException e) { } 
+	//			}
+	//
+	//		});
+	//
+	//	}
 
 	private void playSoundMusic(Context context, Uri alert) {
 		numberOfLoop++;
@@ -342,45 +376,28 @@ public class AlarmReceiverActivity extends Activity {
 			stopALarmbool = true;
 			finish();
 		}
+		mMediaPlayer.start();
 
-
-		mMediaPlayer = new MediaPlayer();
-		try {
-			mMediaPlayer.setDataSource(context, alert);
-			try {
-				if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-					mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-					mMediaPlayer.prepare();
-					mMediaPlayer.start();
-				}
-
-			} 
-			catch (IllegalArgumentException e) {    } 
-			catch (IllegalStateException e) { } 
-			catch (IOException e) { } 
-
-		} catch (IOException e) {
-			System.out.println("OOPS");
-		}
 	}
 
+
 	private void stopSound(){
-		if(ParamHelper.getTalk()){
-			if(mMediaPlayer1.isPlaying()){
-				mMediaPlayer1.stop();
-			}
-
-			if(mMediaPlayer2.isPlaying()){
-				mMediaPlayer2.stop();
-			}
-
-			if(mMediaPlayer3.isPlaying()){
-				mMediaPlayer3.stop();
-			}
-
-		}else{
-			mMediaPlayer.stop();
-		}
+		//		if(ParamHelper.getTalk()){
+		//			if(mMediaPlayer1.isPlaying()){
+		//				mMediaPlayer1.stop();
+		//			}
+		//
+		//			if(mMediaPlayer2.isPlaying()){
+		//				mMediaPlayer2.stop();
+		//			}
+		//
+		//			if(mMediaPlayer3.isPlaying()){
+		//				mMediaPlayer3.stop();
+		//			}
+		//
+		//		}else{
+		mMediaPlayer.stop();
+		//		}
 	}
 
 	//Get an alarm sound. Try for an alarm. If none set, try notification, 
