@@ -27,6 +27,10 @@
     <string name="browse">ค้นหา</string>
     <string name="tap">กดแล้วพูด</string>
     <string name="tap_again">กดอีกครั้ง</string>
+    <string name="ringinglength">ระยะเวลาเสียงปลุกแต่ละช่วง :</string>
+    <string name="seconds">วินาที</string>
+    
+    
     <string name="day1">วันจันทร์</string>
     <string name="day2">วันอังคาร</string>
     <string name="day3">วันพุธ</string>

@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -56,9 +57,9 @@ public class SettingsActivity extends SherlockFragmentActivity{
 	private Button browseMusic;
 
 	final int RINGTONE_PICK = 1;
-	
+
 	private TextView chooseRingtone;
-	
+
 	private EditText seconds_ringing;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,12 +70,12 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		ActionBar ab = getSupportActionBar();
 		ab.setDisplayShowTitleEnabled(false);
 		ab.setDisplayShowHomeEnabled(false);
-		
+
 		seconds_ringing = (EditText) findViewById(R.id.pick_ring_for);
 		seconds_ringing.setText(ParamHelper.getIntervalSongVoice() + "");
 
 		sm = new SoundHelper();
-		
+
 		chooseRingtone = (TextView) findViewById(R.id.choose_ringtone);
 		chooseRingtone.setText(getResources().getString(R.string.choose_ringtone) + " " + ParamHelper.getURISong());
 
@@ -87,7 +88,6 @@ public class SettingsActivity extends SherlockFragmentActivity{
 				intent.setAction(Intent.ACTION_PICK);
 				intent.setType(MediaStore.Audio.Media.CONTENT_TYPE);
 				intent.setData(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-				intent.putExtra("extra", Intent.EXTRA_TITLE);
 				startActivityForResult(Intent.createChooser(intent, "Ringtone"), RINGTONE_PICK);
 
 			}
@@ -256,14 +256,14 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		}catch(Exception e){
 
 		}
-		
+
 		try{
 			Log.v("RECON", snoozeMinutes.getText().toString());
 			ParamHelper.pushIntervalSongVoice(Integer.parseInt(seconds_ringing.getText().toString()));
 		}catch(Exception e){
 
 		}
-		
+
 
 		try{
 			sm.stop();
@@ -285,10 +285,32 @@ public class SettingsActivity extends SherlockFragmentActivity{
 
 		case RINGTONE_PICK:
 			if (RESULT_OK == resultCode) {
-				Log.v("Test", intent.getData() + "");
-				
-				ParamHelper.pushURISong(intent.getData()+"");
-				
+				Log.v("Test", 
+						intent.getExtras() + "");
+
+				Uri MyUri;
+
+				MyUri = Uri.parse(intent.getDataString());
+				String[] proj = { MediaStore.Audio.Media._ID,
+						MediaStore.Audio.Media.DATA,
+						MediaStore.Audio.Media.TITLE,
+						MediaStore.Audio.Artists.ARTIST };
+
+				Cursor tempCursor = managedQuery(MyUri,
+						proj, null, null, null);
+				String artist_name;
+
+				tempCursor.moveToFirst(); //reset the cursor
+				do{
+
+					int col_index = tempCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE);
+	                artist_name = tempCursor.getString(col_index);
+
+                }while(tempCursor.moveToNext());
+
+				ParamHelper.pushURISong(artist_name+"");
+				chooseRingtone.setText(getResources().getString(R.string.choose_ringtone) + " " + artist_name);
+
 			}
 			break;
 		}

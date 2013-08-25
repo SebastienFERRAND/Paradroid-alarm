@@ -14,6 +14,9 @@
     <string name="activate_voice">Activer la reconnaissance vocale :</string>
     <string name="ok">ok</string>
     <string name="minutes">minutes</string>
+    
+    <string name="ringinglength">Longueur sonnerie :</string>
+    <string name="seconds">secondes</string>
     <string name="instructions1">Bienvenue sur Paradroid Alarme ! Commençons par un peu d\'explications.</string>
     <string name="instructions2">Pour ajouter une alarme appuyez sur le bouton en haut à droite</string>
     <string name="instructions3">Pour accéder aux réglages appuyez sur \"Réglage\"</string>
