@@ -77,7 +77,7 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		sm = new SoundHelper();
 
 		chooseRingtone = (TextView) findViewById(R.id.choose_ringtone);
-		chooseRingtone.setText(getResources().getString(R.string.choose_ringtone) + " " + ParamHelper.getURISong());
+		chooseRingtone.setText(getResources().getString(R.string.choose_ringtone) + " " + ParamHelper.getTitleSong());
 
 		browseMusic = (Button) findViewById(R.id.browseButton);
 		browseMusic.setOnClickListener(new OnClickListener() {
@@ -286,7 +286,7 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		case RINGTONE_PICK:
 			if (RESULT_OK == resultCode) {
 				Log.v("Test", 
-						intent.getExtras() + "");
+						intent.getData() + "");
 
 				Uri MyUri;
 
@@ -308,7 +308,9 @@ public class SettingsActivity extends SherlockFragmentActivity{
 
                 }while(tempCursor.moveToNext());
 
-				ParamHelper.pushURISong(artist_name+"");
+				ParamHelper.pushTitleSong(artist_name+"");
+				ParamHelper.pushURISong(intent.getData()+"");
+				
 				chooseRingtone.setText(getResources().getString(R.string.choose_ringtone) + " " + artist_name);
 
 			}

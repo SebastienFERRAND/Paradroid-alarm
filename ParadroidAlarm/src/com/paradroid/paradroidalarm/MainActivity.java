@@ -345,6 +345,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		intent.putExtra("hourOfDay", hourOfDay);
 		intent.putExtra("days", days);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+		
+		Log.v("Test", cal.get(Calendar.HOUR_OF_DAY)+"");
 
 		PendingIntent pendingIntent = PendingIntent.getActivity(cont,
 				(int) id, intent, PendingIntent.FLAG_CANCEL_CURRENT);

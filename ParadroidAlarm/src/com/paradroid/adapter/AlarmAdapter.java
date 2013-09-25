@@ -168,7 +168,8 @@ public class AlarmAdapter extends CursorAdapter {
 
 		TextView day_text = (TextView) v.findViewById(R.id.days);
 		if (day_text != null) {
-			day_text.setText(MainActivity.fromIntToDay(numberDay).substring(0, 3));
+//			day_text.setText(MainActivity.fromIntToDay(numberDay).substring(0, 3));
+			day_text.setText(MainActivity.fromIntToDay(numberDay));
 		}
 
 		day_text.setOnClickListener(new OnClickListener() {

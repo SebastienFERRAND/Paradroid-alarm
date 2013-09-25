@@ -427,7 +427,7 @@ public class AlarmReceiverActivity extends Activity {
 		stopALarmbool = true;
 		Cursor c = ndsA.getAlarm(id);
 		c.moveToFirst();
-		MainActivity.on(con, id, hour, minute, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
+		MainActivity.on(con, id, minute, hour, c.getInt(DataBaseHelper.DATABASE_DAY_ALARM_INT));
 		MainActivity.refresh();
 		wakeLock.release();
 

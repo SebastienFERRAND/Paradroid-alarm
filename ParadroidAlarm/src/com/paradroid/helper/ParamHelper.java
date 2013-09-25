@@ -55,6 +55,13 @@ public class ParamHelper {
 		editor.commit();
 	}
 	
+	public static void pushTitleSong(String value){
+
+		initParamHelper(con);
+		editor.putString("Title", value);
+		editor.commit();
+	}
+	
 	public static void pushIntervalSongVoice(int seconds){
 
 		initParamHelper(con);
@@ -100,6 +107,13 @@ public class ParamHelper {
 
 		initParamHelper(con);
 		String value = settings.getString("URISong", "");
+		return value;
+	}
+	
+	public static String getTitleSong(){
+
+		initParamHelper(con);
+		String value = settings.getString("Title", "");
 		return value;
 	}
 	
