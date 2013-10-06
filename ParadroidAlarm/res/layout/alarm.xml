@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:src="@drawable/talking_alarm" />
+        android:src="@drawable/final_icon_smile" />
 
     <TextView
         android:id="@+id/alarm_text_ring"

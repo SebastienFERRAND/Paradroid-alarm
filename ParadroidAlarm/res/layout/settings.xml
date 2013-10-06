@@ -13,12 +13,43 @@
         android:text="@string/menu"
         android:textColor="#000000"
         android:textSize="20sp" />
+    
+    <LinearLayout
+        android:id="@+id/pick_song_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtmenu"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/choose_ringtone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dip"
+            android:layout_weight="3"
+            android:text="@string/choose_ringtone"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/browseButton"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/rounded_edges_in"
+            android:text="@string/browse"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/voicereconlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtmenu"
+        android:layout_below="@id/pick_song_layout"
         android:layout_marginRight="5dp"
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
@@ -36,8 +67,8 @@
 
         <ToggleButton
             android:id="@+id/togglebuttonenablevoice"
-            android:layout_width="60dp"
-            android:layout_height="28dp"
+            android:layout_width="69dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/toggle_me"
             android:textColor="#FFFFFF"
@@ -129,41 +160,12 @@
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/pick_song_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/intensity_layout"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/choose_ringtone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dip"
-            android:layout_weight="3"
-            android:text="@string/choose_ringtone"
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/browseButton"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/rounded_edges_in"
-            android:text="@string/browse"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp" />
-    </LinearLayout>
     
     <RelativeLayout
         android:id="@+id/seconds_music"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pick_song_layout"
+        android:layout_below="@id/intensity_layout"
         android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 

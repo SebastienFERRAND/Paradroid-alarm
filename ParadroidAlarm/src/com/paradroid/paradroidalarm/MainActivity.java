@@ -66,6 +66,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 
 //		AppFlood.initialize(this, "1hHVHQBuMVjzx6wY", "jDIj7PZ81499L51fdf416", AppFlood.AD_ALL);
 //		AppFlood.destroy();
@@ -84,7 +85,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		aa = new AlarmAdapter(this, c);
 
 		alarm_face = (ImageView) findViewById(R.id.alarm_face);
-		alarm_face.setTag(R.drawable.talking_alarm);
+		alarm_face.setTag(R.drawable.final_icon_smile);
 		alarm_face.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -93,21 +94,17 @@ public class MainActivity extends SherlockFragmentActivity {
 				int idIm = (Integer) v.getTag();
 				
 				switch(idIm){
-				case R.drawable.talking_alarm:
-					alarm_face.setImageResource(R.drawable.happy_alarm);
-					alarm_face.setTag(R.drawable.happy_alarm);
-					break;
-				case R.drawable.happy_alarm:
-					alarm_face.setImageResource(R.drawable.average_alarm);
-					alarm_face.setTag(R.drawable.average_alarm);
+				case R.drawable.final_icon_smile:
+					alarm_face.setImageResource(R.drawable.final_icon_normal);
+					alarm_face.setTag(R.drawable.final_icon_normal);
 					txti.setText("Hey !");
 					break;
-				case R.drawable.average_alarm:
-					alarm_face.setImageResource(R.drawable.unhappy_alarm);
-					alarm_face.setTag(R.drawable.unhappy_alarm);
+				case R.drawable.final_icon_normal:
+					alarm_face.setImageResource(R.drawable.final_icon_unhappy);
+					alarm_face.setTag(R.drawable.final_icon_unhappy);
 					txti.setText("Ouch !");
 					break;
-				case R.drawable.unhappy_alarm:
+				case R.drawable.final_icon_unhappy:
 					alarm_face.setVisibility(View.GONE);
 					txti.setVisibility(View.GONE);
 					break;
@@ -126,27 +123,27 @@ public class MainActivity extends SherlockFragmentActivity {
 				
 				switch(idIm){
 				case 1:
-					txti.setText(R.string.instructions1);
+					txti.setText(R.string.instructions2);
 					txti.setTag(2);
 					break;
 				case 2:
-					txti.setText(R.string.instructions2);
+					txti.setText(R.string.instructions3);
 					txti.setTag(3);
 					break;
 				case 3:
-					txti.setText(R.string.instructions3);
+					txti.setText(R.string.instructions4);
 					txti.setTag(4);
 					break;
 				case 4:
-					txti.setText(R.string.instructions4);
+					txti.setText(R.string.instructions5);
 					txti.setTag(5);
 					break;
 				case 5:
-					txti.setText(R.string.instructions5);
+					txti.setText(R.string.instructions6);
 					txti.setTag(6);
 					break;
 				case 6:
-					txti.setText(R.string.instructions6);
+					txti.setText(R.string.instructions1);
 					txti.setTag(1);
 					break;
 				}
@@ -216,6 +213,13 @@ public class MainActivity extends SherlockFragmentActivity {
 			final Calendar c = Calendar.getInstance();
 			int hour = c.get(Calendar.HOUR_OF_DAY);
 			int minute = c.get(Calendar.MINUTE);
+			
+			if (fromModify){
+				Cursor cur = nds.getAlarm(idTime);
+				cur.moveToFirst();
+				hour = cur.getInt(DataBaseHelper.DATABASE_HOUR_ALARM_INT);
+				minute = cur.getInt(DataBaseHelper.DATABASE_MINUTE_ALARM_INT);
+			}
 
 			// Create a new instance of TimePickerDialog and return it
 			return new TimePickerDialog(getActivity(), this, hour, minute,
@@ -468,6 +472,12 @@ public class MainActivity extends SherlockFragmentActivity {
 		}catch(Exception e){
 
 		}
+	}
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+		overridePendingTransition(R.anim.back_to_left,R.anim.back_to_right);
 	}
 
 	@Override

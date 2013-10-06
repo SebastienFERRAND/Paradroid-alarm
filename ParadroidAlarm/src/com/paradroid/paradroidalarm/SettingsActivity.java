@@ -66,6 +66,8 @@ public class SettingsActivity extends SherlockFragmentActivity{
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.settings);
+		
+		overridePendingTransition(R.anim.push_to_right,R.anim.push_to_left);
 
 		ActionBar ab = getSupportActionBar();
 		ab.setDisplayShowTitleEnabled(false);

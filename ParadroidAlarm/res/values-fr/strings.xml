@@ -17,7 +17,7 @@
     
     <string name="ringinglength">Longueur sonnerie :</string>
     <string name="seconds">secondes</string>
-    <string name="instructions1">Bienvenue sur Paradroid Alarme ! Commençons par un peu d\'explications.</string>
+    <string name="instructions1">Bienvenue sur Paradroid Alarme ! Commençons par un peu d\'explications. (Cliquez pour continuer)</string>
     <string name="instructions2">Pour ajouter une alarme appuyez sur le bouton en haut à droite</string>
     <string name="instructions3">Pour accéder aux réglages appuyez sur \"Réglage\"</string>
     <string name="instructions4">Vous pouvez repousser l\'alarme de quelques minutes en utilisant votre voix entre 2 sonneries</string>
